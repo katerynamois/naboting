@@ -16,6 +16,7 @@ export default {
     return {
       hasExtra: null,
       extrasList: [],
+      extraName: "",
       condition: null,
       maxLoanPeriod: null,
       customLoanPeriod: "",
