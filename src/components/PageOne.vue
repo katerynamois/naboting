@@ -38,26 +38,32 @@ export default {
     openFileDialog() {
       this.$refs.fileInput.click();
     },
-    handleFiles(event) {
-      const files = Array.from(event.target.files);
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
+    readImageFile(file) {
+      if (!file.type.startsWith("image/")) {
+        this.errors.uploadedImages = "Kun billeder er tilladt";
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        this.errors.uploadedImages = "Billeder må ikke være større end 5MB";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target && e.target.result) {
           this.uploadedImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
+          this.errors.uploadedImages = "";
+        }
+      };
+      reader.onerror = () => {
+        this.errors.uploadedImages = "Kunne ikke læse billedet. Prøv igen.";
+      };
+      reader.readAsDataURL(file);
+    },
+    handleFiles(event) {
+      Array.from(event.target.files).forEach((file) => this.readImageFile(file));
     },
     handleDrop(event) {
-      const files = Array.from(event.dataTransfer.files);
-      files.forEach((file) => {
-        if (!file.type.startsWith("image/")) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.uploadedImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
+      Array.from(event.dataTransfer.files).forEach((file) => this.readImageFile(file));
     },
     cancel() {
       this.$emit("go-to-items");
