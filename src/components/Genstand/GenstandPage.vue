@@ -16,13 +16,12 @@ export default {
             selectedItem: null,
             // Holder styr på det aktive filter - Alle betyder alle vises som standard
             activeFilter: 'Alle',
-            items: []
         }
     },
     props: {
-        newItem: {
-            type: Object,
-            default: null,
+        items: {
+            type: Array,
+            default: () => [],
         },
     },
     computed: {
@@ -42,15 +41,11 @@ export default {
         }
     },
     watch: {
-        newItem(item) {
-            if (item && !this.items.find(i => i.id === item.id)) {
-                this.items.push(item);
+        // Reset selected item when items prop changes (e.g. after an edit)
+        items() {
+            if (this.selectedItem) {
+                this.selectedItem = this.items.find(i => i.id === this.selectedItem.id) || null
             }
-        }
-    },
-    mounted() {
-        if (this.newItem && !this.items.find(i => i.id === this.newItem.id)) {
-            this.items.push(this.newItem);
         }
     },
     emits: ['go-to-page-one', 'rediger-genstand']

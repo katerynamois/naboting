@@ -5,6 +5,7 @@ import AddDetails from "@/components/AddDetails.vue";
 import PageOne from "@/components/PageOne.vue";
 import ConfirmItemScreen from "./components/ConfirmItemScreen.vue";
 import GenstandPage from "./components/Genstand/GenstandPage.vue";
+import RedigerGenstand from "./components/Genstand/RedigerGenstand.vue";
 import Stepper from "@/components/Stepper.vue";
 
 export default {
@@ -15,6 +16,7 @@ export default {
     PageOne,
     ConfirmItemScreen,
     GenstandPage,
+    RedigerGenstand,
     Stepper,
   },
   data() {
@@ -23,7 +25,8 @@ export default {
       currentStep: 1,
       pageOneData: null,
       addDetailsData: null,
-      pendingItem: null,
+      items: [],
+      itemToEdit: null,
     };
   },
   methods: {
@@ -38,7 +41,6 @@ export default {
       this.currentStep = 1;
       this.pageOneData = null;
       this.addDetailsData = null;
-      this.pendingItem = null;
     },
     goToAddDetails(data) {
       this.pageOneData = data;
@@ -53,14 +55,22 @@ export default {
       this.currentStep = 3;
     },
     handleRedigerGenstand(item) {
-      // Placeholder — navigate to edit flow when implemented
-      console.log('Rediger genstand:', item);
+      this.itemToEdit = item;
+      this.currentPage = "redigerGenstand";
+    },
+    handleSaveItem(updatedItem) {
+      const index = this.items.findIndex(i => i.id === updatedItem.id);
+      if (index !== -1) {
+        this.items.splice(index, 1, updatedItem);
+      }
+      this.itemToEdit = null;
+      this.currentPage = "genstandPage";
     },
     goToGenstandPage() {
       if (this.pageOneData && this.addDetailsData) {
         const d1 = this.pageOneData;
         const d2 = this.addDetailsData;
-        this.pendingItem = {
+        const newItem = {
           id: Date.now(),
           title: d1.name,
           category: d1.category,
@@ -74,6 +84,9 @@ export default {
           activeLoans: 0,
           rating: null,
         };
+        this.items.push(newItem);
+        this.pageOneData = null;
+        this.addDetailsData = null;
       }
       this.currentPage = "genstandPage";
     },
@@ -120,9 +133,16 @@ export default {
 
       <GenstandPage
         v-if="currentPage === 'genstandPage'"
-        :newItem="pendingItem"
+        :items="items"
         @go-to-page-one="goToPageOne"
         @rediger-genstand="handleRedigerGenstand"
+      />
+
+      <RedigerGenstand
+        v-if="currentPage === 'redigerGenstand' && itemToEdit"
+        :item="itemToEdit"
+        @save-item="handleSaveItem"
+        @go-back="currentPage = 'genstandPage'"
       />
     </v-main>
 
