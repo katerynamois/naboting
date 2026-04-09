@@ -36,13 +36,11 @@ export default {
       this.currentStep = 1;
     },
     goToAddDetails(data) {
-      console.log("PageOne data:", data);
       this.currentPage = "addDetails";
       this.currentStep = 2;
     },
     handleSaveDetails(details) {
       this.itemDetails = details;
-      console.log("Saved:", details);
       this.currentPage = "items"; //Change to next page when implemented
     },
     goToConfirmItem() {
