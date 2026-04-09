@@ -59,16 +59,6 @@ export default {
         reader.readAsDataURL(file);
       });
     },
-    next() {
-      const data = {
-        category:
-          this.selectedCategory === "Andet"
-            ? this.customCategory
-            : this.selectedCategory,
-        images: this.uploadedImages,
-      };
-      this.$emit("go-to-add-details", data);
-    },
     cancel() {
       this.$emit("go-to-items");
     },
