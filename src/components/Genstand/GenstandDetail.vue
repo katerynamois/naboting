@@ -76,7 +76,7 @@ export default {
     },
     watch: {
     },
-    emits: ['gåTilbage']
+    emits: ['gåTilbage', 'rediger']
 }
 </script>
 
@@ -89,8 +89,8 @@ export default {
             <button class="tilbage-knap" @click="$emit('gåTilbage')">
                 ← Tilbage
             </button>
-            <!-- Rediger-knap - funktionalitet laves af en anden i gruppen -->
-            <button class="rediger-knap">
+            <!-- Rediger-knap -->
+            <button class="rediger-knap" @click="$emit('rediger')">
                 ✏️ Rediger
             </button>
         </header>

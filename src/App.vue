@@ -52,6 +52,10 @@ export default {
       this.currentPage = "confirmItem";
       this.currentStep = 3;
     },
+    handleRedigerGenstand(item) {
+      // Placeholder — navigate to edit flow when implemented
+      console.log('Rediger genstand:', item);
+    },
     goToGenstandPage() {
       if (this.pageOneData && this.addDetailsData) {
         const d1 = this.pageOneData;
@@ -118,6 +122,7 @@ export default {
         v-if="currentPage === 'genstandPage'"
         :newItem="pendingItem"
         @go-to-page-one="goToPageOne"
+        @rediger-genstand="handleRedigerGenstand"
       />
     </v-main>
 

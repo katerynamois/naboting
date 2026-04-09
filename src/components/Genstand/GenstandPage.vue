@@ -53,7 +53,7 @@ export default {
             this.items.push(this.newItem);
         }
     },
-    emits: []
+    emits: ['go-to-page-one', 'rediger-genstand']
 }
 </script>
 
@@ -75,6 +75,7 @@ export default {
             :activeLoans="selectedItem.activeLoans"
             :rating="selectedItem.rating"
             @gåTilbage="selectedItem = null"
+            @rediger="$emit('rediger-genstand', selectedItem)"
         />
 
         <!-- Liste visning - skjules når en genstand er valgt -->
