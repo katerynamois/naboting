@@ -21,7 +21,9 @@ export default {
     return {
       currentPage: "home",
       currentStep: 1,
-      itemDetails: null,
+      pageOneData: null,
+      addDetailsData: null,
+      pendingItem: null,
     };
   },
   methods: {
@@ -34,20 +36,41 @@ export default {
     goToPageOne() {
       this.currentPage = "pageOne";
       this.currentStep = 1;
+      this.pageOneData = null;
+      this.addDetailsData = null;
+      this.pendingItem = null;
     },
     goToAddDetails(data) {
+      this.pageOneData = data;
       this.currentPage = "addDetails";
       this.currentStep = 2;
     },
     handleSaveDetails(details) {
-      this.itemDetails = details;
-      this.currentPage = "items"; //Change to next page when implemented
+      this.addDetailsData = details;
     },
     goToConfirmItem() {
       this.currentPage = "confirmItem";
       this.currentStep = 3;
     },
     goToGenstandPage() {
+      if (this.pageOneData && this.addDetailsData) {
+        const d1 = this.pageOneData;
+        const d2 = this.addDetailsData;
+        this.pendingItem = {
+          id: Date.now(),
+          title: d1.name,
+          category: d1.category,
+          brand: d1.brand || null,
+          status: 'Tilgængelig',
+          image: d1.images.length ? d1.images[0] : 'https://placehold.co/64x64',
+          condition: d2.condition,
+          maxDays: d2.maxLoanPeriod,
+          accessories: d2.extras && d2.extras.length ? d2.extras.join(', ') : null,
+          totalLoans: 0,
+          activeLoans: 0,
+          rating: null,
+        };
+      }
       this.currentPage = "genstandPage";
     },
   },
@@ -85,6 +108,7 @@ export default {
       <ConfirmItemScreen
         v-if="currentPage === 'confirmItem'"
         :currentStep="currentStep"
+        :itemData="{ ...pageOneData, ...addDetailsData }"
         @goBack="goToAddDetails"
         @createItem="goToItems"
         @goToGenstandPage="goToGenstandPage"
@@ -92,6 +116,7 @@ export default {
 
       <GenstandPage
         v-if="currentPage === 'genstandPage'"
+        :newItem="pendingItem"
         @go-to-page-one="goToPageOne"
       />
     </v-main>

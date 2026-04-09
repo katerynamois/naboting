@@ -18,6 +18,7 @@ export default {
     customCategory: "",
     uploadedImages: [],
     itemName: "",
+    itemBrand: "",
 
     errors: {
       uploadedImages: "",
@@ -116,6 +117,7 @@ export default {
           : this.selectedCategory,
       images: this.uploadedImages,
       name: this.itemName,
+      brand: this.itemBrand.trim() || null,
     };
 
     this.$emit("go-to-add-details", data);
@@ -250,6 +252,7 @@ export default {
 
       <h3>Mærke</h3>
       <v-text-field
+        v-model="itemBrand"
         label="F.eks. Bosch, Apple..."
         class="mt-4"
         color="var(--color-primary)"

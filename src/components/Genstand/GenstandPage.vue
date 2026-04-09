@@ -16,54 +16,14 @@ export default {
             selectedItem: null,
             // Holder styr på det aktive filter - Alle betyder alle vises som standard
             activeFilter: 'Alle',
-            // Mock-data - falske genstande til at teste kortet med
-            items: [
-                {
-                    id: 1,
-                    title: 'Boremaskine',
-                    category: 'Elektronik',
-                    brand: 'Bosch',
-                    status: 'Tilgængelig',
-                    image: 'https://placehold.co/64x64',
-                    condition: 'Ny',
-                    maxDays: 7,
-                    accessories: 'Extra batteri, bits sæt, oplader',
-                    totalLoans: 12,
-                    activeLoans: 1,
-                    rating: 4.9
-                },
-                {
-                    id: 2,
-                    title: 'Cykel',
-                    category: 'Sport',
-                    brand: null,
-                    status: 'Udlånt',
-                    image: 'https://placehold.co/64x64',
-                    condition: 'Brugt',
-                    maxDays: 3,
-                    accessories: null,
-                    totalLoans: 5,
-                    activeLoans: 1,
-                    rating: 4.2
-                },
-                {
-                    id: 3,
-                    title: 'Hammer',
-                    category: 'Værktøj',
-                    brand: 'Stanley',
-                    status: 'Inaktiv',
-                    image: 'https://placehold.co/64x64',
-                    condition: 'Slidt',
-                    maxDays: 1,
-                    accessories: null,
-                    totalLoans: 8,
-                    activeLoans: 0,
-                    rating: 3.8
-                }
-            ]
+            items: []
         }
     },
     props: {
+        newItem: {
+            type: Object,
+            default: null,
+        },
     },
     computed: {
         // Filtrerer genstande baseret på aktivt filter
@@ -82,6 +42,16 @@ export default {
         }
     },
     watch: {
+        newItem(item) {
+            if (item && !this.items.find(i => i.id === item.id)) {
+                this.items.push(item);
+            }
+        }
+    },
+    mounted() {
+        if (this.newItem && !this.items.find(i => i.id === this.newItem.id)) {
+            this.items.push(this.newItem);
+        }
     },
     emits: []
 }

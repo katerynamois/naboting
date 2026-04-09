@@ -12,30 +12,25 @@ export default {
       type: Number,
       default: 1,
     },
-  },
-  data() {
-    return {
-      item: {
-        image:
-          "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=400&auto=format&fit=crop",
-        name: "Boremaskine",
-        brand: "Intet mærke",
-        category: "Elektronik",
-        condition: "Ny",
-        loanPeriod: "3 dage",
-        accessories: "Intet tilbehør tilføjet",
-      },
-    };
+    itemData: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   computed: {
+    displayImage() {
+      const images = this.itemData.images;
+      return images && images.length ? images[0] : null;
+    },
     fields() {
+      const d = this.itemData;
       return [
-        { label: "Navn", value: this.item.name },
-        { label: "Mærke", value: this.item.brand },
-        { label: "Kategori", value: this.item.category },
-        { label: "Stand", value: this.item.condition },
-        { label: "Max låneperiode", value: this.item.loanPeriod },
-        { label: "Tilbehør", value: this.item.accessories },
+        { label: "Navn", value: d.name || '—' },
+        { label: "Mærke", value: d.brand || 'Intet mærke' },
+        { label: "Kategori", value: d.category || '—' },
+        { label: "Stand", value: d.condition || '—' },
+        { label: "Max låneperiode", value: d.maxLoanPeriod || '—' },
+        { label: "Tilbehør", value: d.extras && d.extras.length ? d.extras.join(', ') : 'Intet tilbehør tilføjet' },
       ];
     },
   },
@@ -74,9 +69,9 @@ export default {
         <div class="section-title mb-3">Billeder</div>
 
         <div class="image-row mb-5">
-          <div class="image-preview">
+          <div class="image-preview" v-if="displayImage">
             <v-img
-              :src="item.image"
+              :src="displayImage"
               cover
               width="72"
               height="72"
