@@ -180,5 +180,7 @@ export default {
 
 .naboting-menu-icon {
   color: #ffffff !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 </style>
