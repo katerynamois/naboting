@@ -96,6 +96,20 @@ export default {
 
 <template>
   <v-app>
+
+    <!-- Topbar — vises kun på sider uden egen toolbar -->
+    <v-app-bar
+      v-if="currentPage === 'home' || currentPage === 'genstandPage'"
+      flat
+      class="naboting-bar"
+    >
+      <span class="naboting-logo" @click="goHome">NABOTING</span>
+      <v-spacer />
+      <v-btn icon variant="text" class="naboting-menu-icon">
+        <v-icon color="white">mdi-menu</v-icon>
+      </v-btn>
+    </v-app-bar>
+
     <v-main>
       <!-- Page navigation -->
       <Home v-if="currentPage === 'home'" @go-to-items="goToItems" />
@@ -146,21 +160,25 @@ export default {
       />
     </v-main>
 
-    <v-btn
-      class="ma-2"
-      icon="mdi-home"
-      location="top left"
-      position="absolute"
-      color="primary"
-      @click="goHome"
-    />
-
-    <!-- <v-btn
-      class="ma-2"
-      icon="mdi-theme-light-dark"
-      location="top right"
-      position="absolute"
-      @click="$vuetify.theme.cycle()" 
-    />-->
   </v-app>
 </template>
+
+<style>
+.naboting-bar {
+  background-color: rgba(81, 120, 73, 1);
+  padding: 0 16px;
+}
+
+.naboting-logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.naboting-menu-icon {
+  color: #ffffff !important;
+}
+</style>

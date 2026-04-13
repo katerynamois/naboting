@@ -180,7 +180,7 @@ export default {
 .page {
   background: var(--color-bg);
   min-height: 100vh;
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-4) var(--space-4);
   padding-bottom: 90px;
 }
 </style>
