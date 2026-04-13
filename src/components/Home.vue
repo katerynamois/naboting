@@ -48,11 +48,18 @@ export default {
 <style scoped>
 .items_button,
 .loans_button {
-  background-color: rgba(255, 160, 65, 1);
-  color: white;
-  font-weight: normal;
+  background-color: rgba(81, 120, 73, 1);
+  color: #ffffff;
+  font-weight: 700;
   min-width: 200px;
   border-radius: var(--radius-md);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6) !important;
+  transition: background-color 0.2s ease;
+}
+
+.items_button:hover,
+.loans_button:hover {
+  background-color: #374151 !important;
 }
 
 .welcome-image {

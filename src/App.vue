@@ -1,6 +1,5 @@
 <script>
 import Home from "@/components/Home.vue";
-import MyItems from "@/components/MyItems.vue";
 import AddDetails from "@/components/AddDetails.vue";
 import PageOne from "@/components/PageOne.vue";
 import ConfirmItemScreen from "./components/ConfirmItemScreen.vue";
@@ -11,7 +10,6 @@ import Stepper from "@/components/Stepper.vue";
 export default {
   components: {
     Home,
-    MyItems,
     AddDetails,
     PageOne,
     ConfirmItemScreen,
@@ -113,12 +111,6 @@ export default {
     <v-main>
       <!-- Page navigation -->
       <Home v-if="currentPage === 'home'" @go-to-items="goToItems" />
-
-      <MyItems
-        v-if="currentPage === 'items'"
-        @go-to-home="goHome"
-        @go-to-page-one="goToPageOne"
-      />
 
       <PageOne
         v-if="currentPage === 'pageOne'"
