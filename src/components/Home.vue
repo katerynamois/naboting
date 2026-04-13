@@ -14,8 +14,8 @@ export default {
 <template>
   <div class="page-bg">
     <v-container class="text-center">
-      <h1 class="mt-15 mb-15">Velkommen til dit lokale fællesskab</h1>
-      <v-img
+      <h1 class="mt-5 mb-10">Velkommen til dit lokale fællesskab</h1>
+       <v-img
         src="@/assets/images/community.jpg"
         alt="Velkomstbillede"
         class="welcome-image mb-4"
@@ -28,7 +28,7 @@ export default {
       <v-row>
         <v-col cols="12">
           <v-btn
-            class="items_button mt-15"
+            class="items_button mt-10"
             size="large"
             @click="$emit('go-to-items')"
           >
@@ -40,6 +40,7 @@ export default {
           <v-btn class="loans_button" size="large"> Dine lån </v-btn>
         </v-col>
       </v-row>
+     
     </v-container>
   </div>
 </template>
@@ -47,7 +48,7 @@ export default {
 <style scoped>
 .items_button,
 .loans_button {
-  background-color: var(--color-primary);
+  background-color: rgba(255, 160, 65, 1);
   color: white;
   font-weight: normal;
   min-width: 200px;
