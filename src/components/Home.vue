@@ -40,7 +40,7 @@ export default {
           <v-btn
             class="loans_button"
             size="large"
-            @click="$emit('go-to-profile')"
+            @click="$emit('show-login')"
           >
             Log ind
           </v-btn>

@@ -7,6 +7,7 @@ import GenstandPage from "./components/Genstand/GenstandPage.vue";
 import RedigerGenstand from "./components/Genstand/RedigerGenstand.vue";
 import Stepper from "@/components/Stepper.vue";
 import Profile from "@/components/Profile.vue";
+import LoginModal from "@/components/LoginModal.vue";
 
 export default {
   components: {
@@ -18,6 +19,7 @@ export default {
     RedigerGenstand,
     Stepper,
     Profile,
+    LoginModal,
   },
   data() {
     return {
@@ -28,6 +30,7 @@ export default {
       items: [],
       itemToEdit: null,
       drawer: false,
+      showLogin: false,
     };
   },
   methods: {
@@ -38,6 +41,18 @@ export default {
       this.currentPage = "genstandPage";
     },
     goToProfile() {
+      this.currentPage = "profile";
+      this.showLogin = false;
+    },
+    openLogin() {
+      this.showLogin = true;
+      this.drawer = false;
+    },
+    closeLogin() {
+      this.showLogin = false;
+    },
+    handleLogin() {
+      this.showLogin = false;
       this.currentPage = "profile";
     },
     goToPageOne() {
@@ -118,7 +133,7 @@ export default {
     <v-navigation-drawer v-model="drawer" location="right" temporary width="280">
       <v-list class="pa-0">
         <v-list-item class="menu-item" @click="goToProfile(); drawer = false">Opret profil</v-list-item>
-        <v-list-item class="menu-item" @click="goToProfile(); drawer = false">Log ind</v-list-item>
+        <v-list-item class="menu-item" @click="openLogin">Log ind</v-list-item>
       </v-list>
 
       <v-divider />
@@ -142,7 +157,11 @@ export default {
 
     <v-main>
       <!-- Page navigation -->
-      <Home v-if="currentPage === 'home'" @go-to-profile="goToProfile" />
+      <Home
+        v-if="currentPage === 'home'"
+        @go-to-profile="goToProfile"
+        @show-login="openLogin"
+      />
 
       <Profile
         v-if="currentPage === 'profile'"
@@ -187,6 +206,13 @@ export default {
         :item="itemToEdit"
         @save-item="handleSaveItem"
         @go-back="currentPage = 'genstandPage'"
+      />
+
+      <LoginModal
+        v-if="showLogin"
+        @close="closeLogin"
+        @create-profile="goToProfile"
+        @login="handleLogin"
       />
     </v-main>
 
