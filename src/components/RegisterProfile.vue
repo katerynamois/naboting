@@ -4,12 +4,23 @@ export default {
   emits: ["show-login", "profile-created"],
   data() {
     return {
+      currentRegisterStep: 1,
       email: "",
       phone: "",
       password: "",
       repeatPassword: "",
       acceptedTerms: false,
+      userType: "private",
+      firstName: "",
+      lastName: "",
+      gender: "",
+      birthYear: "",
     };
+  },
+  methods: {
+    goToAboutStep() {
+      this.currentRegisterStep = 3;
+    },
   },
 };
 </script>
@@ -17,7 +28,7 @@ export default {
 <template>
   <div class="register-page">
     <v-container class="register-container">
-      <header class="register-header">
+      <header v-if="currentRegisterStep === 1" class="register-header">
         <p class="step-label">STEP 1 AF 5</p>
         <h1>Opret bruger</h1>
         <p class="login-text">
@@ -28,7 +39,11 @@ export default {
         </p>
       </header>
 
-      <form class="register-form" @submit.prevent="$emit('profile-created')">
+      <form
+        v-if="currentRegisterStep === 1"
+        class="register-form"
+        @submit.prevent="goToAboutStep"
+      >
         <input
           v-model="email"
           class="register-input"
@@ -85,6 +100,79 @@ export default {
           Forsæt
         </button>
       </form>
+
+      <header v-if="currentRegisterStep === 3" class="register-header register-header--about">
+        <p class="step-label">STEP 3 AF 5</p>
+        <h1>Mere om dig</h1>
+        <p class="login-text">
+          Du kan både oprette dig som erhverv eller som privatperson
+        </p>
+      </header>
+
+      <form
+        v-if="currentRegisterStep === 3"
+        class="register-form"
+        @submit.prevent="$emit('profile-created')"
+      >
+        <div class="account-type-toggle" aria-label="Vælg brugertype">
+          <button
+            type="button"
+            class="toggle-button"
+            :class="{ 'toggle-button--active': userType === 'private' }"
+            @click="userType = 'private'"
+          >
+            Privat
+          </button>
+
+          <button
+            type="button"
+            class="toggle-button"
+            :class="{ 'toggle-button--active': userType === 'business' }"
+            @click="userType = 'business'"
+          >
+            Erhverv
+          </button>
+        </div>
+
+        <input
+          v-model="firstName"
+          class="register-input"
+          type="text"
+          placeholder="Fornavn"
+          autocomplete="given-name"
+        />
+
+        <input
+          v-model="lastName"
+          class="register-input"
+          type="text"
+          placeholder="Efternavn"
+          autocomplete="family-name"
+        />
+
+        <div class="select-shell">
+          <select v-model="gender" class="register-select" aria-label="Køn">
+            <option value="" disabled>Køn</option>
+            <option>Kvinde</option>
+            <option>Mand</option>
+            <option>Andet</option>
+            <option>Vil ikke oplyse</option>
+          </select>
+        </div>
+
+        <div class="select-shell">
+          <select v-model="birthYear" class="register-select" aria-label="Fødselsår">
+            <option value="" disabled>Fødselsår</option>
+            <option v-for="year in 90" :key="year">
+              {{ 2026 - year }}
+            </option>
+          </select>
+        </div>
+
+        <button class="continue-button" type="submit">
+          Forsæt
+        </button>
+      </form>
     </v-container>
   </div>
 </template>
@@ -103,6 +191,10 @@ export default {
 .register-header {
   text-align: center;
   margin-bottom: var(--space-4);
+}
+
+.register-header--about {
+  margin-bottom: var(--space-3);
 }
 
 .step-label {
@@ -144,7 +236,8 @@ h1 {
 }
 
 .register-input,
-.phone-field {
+.phone-field,
+.select-shell {
   width: 100%;
   min-height: 44px;
   border: none;
@@ -158,6 +251,32 @@ h1 {
 .register-input {
   padding: 0 var(--space-4);
   outline: none;
+}
+
+.account-type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  max-width: 335px;
+  width: 100%;
+  margin: 0 auto var(--space-1);
+}
+
+.toggle-button {
+  min-height: 34px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.toggle-button--active {
+  background: var(--color-accent);
+  color: var(--color-surface);
 }
 
 .phone-field {
@@ -214,6 +333,24 @@ h1 {
   font-size: var(--text-label);
   outline: none;
   padding: 0 var(--space-4);
+}
+
+.select-shell {
+  position: relative;
+}
+
+.register-select {
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  outline: none;
+  padding: 0 var(--space-4);
+  cursor: pointer;
 }
 
 .terms-row {
