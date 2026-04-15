@@ -124,7 +124,9 @@ export default {
   border-radius: var(--radius-full);
   background: var(--color-accent);
   color: var(--color-surface);
-  font-size: 34px;
+  font-family: var(--font-body);
+  font-size: var(--text-h1);
+  font-weight: 400;
   line-height: 1;
   transform: translateX(-50%);
   cursor: pointer;
@@ -133,16 +135,16 @@ export default {
 h1 {
   margin: 0 0 16px;
   color: var(--color-neutral);
-  font-family: var(--font-body);
-  font-size: 28px;
-  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  font-weight: 600;
 }
 
 .signup-text {
   margin: 0 0 30px;
   color: var(--color-neutral);
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: var(--text-body);
 }
 
 .signup-link {
@@ -174,7 +176,7 @@ h1 {
   padding: 0 14px;
   color: var(--color-neutral);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-label);
   outline: none;
 }
 
@@ -192,7 +194,7 @@ h1 {
   background: var(--color-primary);
   color: var(--color-surface);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-label);
   font-weight: 800;
   cursor: pointer;
 }
@@ -207,7 +209,7 @@ h1 {
   background: transparent;
   color: var(--color-secondary);
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: var(--text-body);
   cursor: pointer;
 }
 
@@ -215,6 +217,6 @@ h1 {
   margin: 16px 0 0;
   color: var(--color-secondary);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--text-label);
 }
 </style>

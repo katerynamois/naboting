@@ -8,6 +8,7 @@ import RedigerGenstand from "./components/Genstand/RedigerGenstand.vue";
 import Stepper from "@/components/Stepper.vue";
 import Profile from "@/components/Profile.vue";
 import LoginModal from "@/components/LoginModal.vue";
+import RegisterProfile from "@/components/RegisterProfile.vue";
 
 export default {
   components: {
@@ -20,6 +21,7 @@ export default {
     Stepper,
     Profile,
     LoginModal,
+    RegisterProfile,
   },
   data() {
     return {
@@ -43,6 +45,11 @@ export default {
     goToProfile() {
       this.currentPage = "profile";
       this.showLogin = false;
+    },
+    goToRegisterProfile() {
+      this.currentPage = "registerProfile";
+      this.showLogin = false;
+      this.drawer = false;
     },
     openLogin() {
       this.showLogin = true;
@@ -125,14 +132,14 @@ export default {
       <span class="naboting-logo" @click="goHome">NABOTING</span>
       <v-spacer />
       <v-btn icon variant="text" class="naboting-menu-icon" @click="drawer = true">
-        <v-icon color="white">mdi-menu</v-icon>
+        <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
 
     <!-- Burger menu drawer -->
     <v-navigation-drawer v-model="drawer" location="right" temporary width="280">
       <v-list class="pa-0">
-        <v-list-item class="menu-item" @click="goToProfile(); drawer = false">Opret profil</v-list-item>
+        <v-list-item class="menu-item" @click="goToRegisterProfile">Opret profil</v-list-item>
         <v-list-item class="menu-item" @click="openLogin">Log ind</v-list-item>
       </v-list>
 
@@ -149,7 +156,7 @@ export default {
 
       <template #append>
         <div class="support-box ma-4">
-          <v-icon class="mr-3" color="#9b6fa0">mdi-send-outline</v-icon>
+          <v-icon class="mr-3 support-icon">mdi-send-outline</v-icon>
           <span class="font-weight-bold">Kontakt support</span>
         </div>
       </template>
@@ -159,8 +166,14 @@ export default {
       <!-- Page navigation -->
       <Home
         v-if="currentPage === 'home'"
-        @go-to-profile="goToProfile"
+        @go-to-profile="goToRegisterProfile"
         @show-login="openLogin"
+      />
+
+      <RegisterProfile
+        v-if="currentPage === 'registerProfile'"
+        @show-login="openLogin"
+        @profile-created="goToProfile"
       />
 
       <Profile
@@ -211,7 +224,7 @@ export default {
       <LoginModal
         v-if="showLogin"
         @close="closeLogin"
-        @create-profile="goToProfile"
+        @create-profile="goToRegisterProfile"
         @login="handleLogin"
       />
     </v-main>
@@ -221,7 +234,7 @@ export default {
 
 <style>
 .naboting-bar {
-  background-color: rgba(81, 120, 73, 1);
+  background-color: var(--color-primary);
   padding: 0 16px;
 }
 
@@ -229,13 +242,13 @@ export default {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: #ffffff;
+  color: var(--color-surface);
   cursor: pointer;
   user-select: none;
 }
 
 .naboting-menu-icon {
-  color: #ffffff !important;
+  color: var(--color-surface) !important;
   background: transparent !important;
   box-shadow: none !important;
 }
@@ -250,9 +263,13 @@ export default {
 .support-box {
   display: flex;
   align-items: center;
-  background-color: #fef9e7;
+  background-color: var(--color-image-bg);
   border-radius: 12px;
   padding: 16px;
   font-size: 15px;
+}
+
+.support-icon {
+  color: var(--color-accent);
 }
 </style>
