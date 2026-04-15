@@ -13,12 +13,12 @@ export default {
 
 <template>
   <div class="page-bg">
-    <v-container class="text-center">
-      <h1 class="mt-5 mb-10">Velkommen til dit lokale fællesskab</h1>
+    <v-container fluid class="text-center mx-auto">
+      <h1 class="justify-content-center">Velkommen til dit lokale fællesskab</h1>
        <v-img
         src="@/assets/images/community.jpg"
         alt="Velkomstbillede"
-        class="welcome-image mb-4"
+        class="welcome-image mb-4 mx-auto"
         max-width="500"
         contain
       />
@@ -40,7 +40,7 @@ export default {
           <v-btn class="loans_button" size="large"> Dine lån </v-btn>
         </v-col>
       </v-row>
-     
+
     </v-container>
   </div>
 </template>
@@ -62,9 +62,6 @@ export default {
   background-color: #374151 !important;
 }
 
-.welcome-image {
-  margin: 0 auto;
-}
 
 .page-bg {
   background-color: var(--color-bg);

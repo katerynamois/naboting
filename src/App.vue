@@ -25,6 +25,7 @@ export default {
       addDetailsData: null,
       items: [],
       itemToEdit: null,
+      drawer: false,
     };
   },
   methods: {
@@ -103,10 +104,36 @@ export default {
     >
       <span class="naboting-logo" @click="goHome">NABOTING</span>
       <v-spacer />
-      <v-btn icon variant="text" class="naboting-menu-icon">
+      <v-btn icon variant="text" class="naboting-menu-icon" @click="drawer = true">
         <v-icon color="white">mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
+
+    <!-- Burger menu drawer -->
+    <v-navigation-drawer v-model="drawer" location="right" temporary width="280">
+      <v-list class="pa-0">
+        <v-list-item class="menu-item" @click="drawer = false">Opret dig</v-list-item>
+        <v-list-item class="menu-item" @click="drawer = false">Log ind</v-list-item>
+      </v-list>
+
+      <v-divider />
+
+      <v-list class="pa-0">
+        <v-list-item class="menu-item" @click="drawer = false">Om Naboting</v-list-item>
+        <v-list-item class="menu-item" @click="drawer = false">Sådan virker det</v-list-item>
+        <v-list-item class="menu-item" @click="drawer = false">Blog</v-list-item>
+        <v-list-item class="menu-item" @click="drawer = false">FAQ</v-list-item>
+        <v-list-item class="menu-item" @click="drawer = false">Cookiepolitik</v-list-item>
+        <v-list-item class="menu-item" @click="drawer = false">Brugervilkår</v-list-item>
+      </v-list>
+
+      <template #append>
+        <div class="support-box ma-4">
+          <v-icon class="mr-3" color="#9b6fa0">mdi-send-outline</v-icon>
+          <span class="font-weight-bold">Kontakt support</span>
+        </div>
+      </template>
+    </v-navigation-drawer>
 
     <v-main>
       <!-- Page navigation -->
@@ -174,5 +201,21 @@ export default {
   color: #ffffff !important;
   background: transparent !important;
   box-shadow: none !important;
+}
+
+.menu-item {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 20px;
+  cursor: pointer;
+}
+
+.support-box {
+  display: flex;
+  align-items: center;
+  background-color: #fef9e7;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 15px;
 }
 </style>
