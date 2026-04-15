@@ -15,6 +15,10 @@ export default {
       lastName: "",
       gender: "",
       birthYear: "",
+      companyName: "",
+      cvr: "",
+      contactPerson: "",
+      industry: "",
       openDropdown: null,
       citySearch: "",
       profileImage: null,
@@ -27,8 +31,14 @@ export default {
     birthYearOptions() {
       return Array.from({ length: 90 }, (_, index) => 2026 - index - 1);
     },
+    industryOptions() {
+      return ["Byggeri", "Have og udeliv", "Transport", "Event", "IT og elektronik", "Andet"];
+    },
     profileInitial() {
-      return (this.firstName || "K").trim().charAt(0).toUpperCase() || "K";
+      return (this.firstName || this.contactPerson || this.companyName || "K")
+        .trim()
+        .charAt(0)
+        .toUpperCase() || "K";
     },
   },
   methods: {
@@ -185,6 +195,7 @@ export default {
         </div>
 
         <input
+          v-if="userType === 'private'"
           v-model="firstName"
           class="register-input"
           type="text"
@@ -193,6 +204,7 @@ export default {
         />
 
         <input
+          v-if="userType === 'private'"
           v-model="lastName"
           class="register-input"
           type="text"
@@ -200,7 +212,7 @@ export default {
           autocomplete="family-name"
         />
 
-        <div class="select-shell" tabindex="-1" @focusout="closeDropdown">
+        <div v-if="userType === 'private'" class="select-shell" tabindex="-1" @focusout="closeDropdown">
           <button
             type="button"
             class="register-select"
@@ -227,7 +239,7 @@ export default {
           </div>
         </div>
 
-        <div class="select-shell" tabindex="-1" @focusout="closeDropdown">
+        <div v-if="userType === 'private'" class="select-shell" tabindex="-1" @focusout="closeDropdown">
           <button
             type="button"
             class="register-select"
@@ -253,6 +265,60 @@ export default {
             </button>
           </div>
         </div>
+
+        <template v-if="userType === 'business'">
+          <input
+            v-model="companyName"
+            class="register-input"
+            type="text"
+            placeholder="Firmanavn"
+            autocomplete="organization"
+          />
+
+          <input
+            v-model="cvr"
+            class="register-input"
+            type="text"
+            inputmode="numeric"
+            placeholder="CVR"
+            autocomplete="off"
+          />
+
+          <input
+            v-model="contactPerson"
+            class="register-input"
+            type="text"
+            placeholder="Kontaktperson"
+            autocomplete="name"
+          />
+
+          <div class="select-shell" tabindex="-1" @focusout="closeDropdown">
+            <button
+              type="button"
+              class="register-select"
+              :class="{ 'register-select--placeholder': !industry }"
+              aria-label="Branche"
+              :aria-expanded="openDropdown === 'industry'"
+              @click="toggleDropdown('industry')"
+            >
+              <span>{{ industry || "Branche" }}</span>
+              <v-icon size="18">mdi-chevron-down</v-icon>
+            </button>
+
+            <div v-if="openDropdown === 'industry'" class="select-menu">
+              <button
+                v-for="option in industryOptions"
+                :key="option"
+                type="button"
+                class="select-option"
+                :class="{ 'select-option--active': industry === option }"
+                @click="selectDropdownValue('industry', option)"
+              >
+                {{ option }}
+              </button>
+            </div>
+          </div>
+        </template>
 
         <div class="register-actions">
           <button class="back-button" type="button" @click="goBack">
