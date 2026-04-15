@@ -49,7 +49,7 @@ export default {
       this.currentRegisterStep = 3;
     },
     goToProfileImageStep() {
-      this.currentRegisterStep = 4;
+      this.currentRegisterStep = 3;
     },
     goBack() {
       if (this.currentRegisterStep === 1) {
@@ -83,7 +83,7 @@ export default {
   <div class="register-page">
     <v-container class="register-container">
       <header v-if="currentRegisterStep === 1" class="register-header">
-        <p class="step-label">STEP 1 AF 4</p>
+        <p class="step-label">STEP 1 AF 3</p>
         <h1>Opret bruger</h1>
         <p class="login-text">
           Allerede medlem?
@@ -162,7 +162,7 @@ export default {
       </form>
 
       <header v-if="currentRegisterStep === 2" class="register-header register-header--about">
-        <p class="step-label">STEP 2 AF 4</p>
+        <p class="step-label">STEP 2 AF 3</p>
         <h1>Mere om dig</h1>
         <p class="login-text">
           Du kan både oprette dig som erhverv eller som privatperson
@@ -320,18 +320,26 @@ export default {
           </div>
         </template>
 
+        <input
+          v-model="citySearch"
+          class="register-input"
+          type="text"
+          placeholder="Søg efter by/postnr"
+          autocomplete="postal-code"
+        />
+
         <div class="register-actions">
           <button class="back-button" type="button" @click="goBack">
             Tilbage
           </button>
 
-          <button class="continue-button" type="submit">
+          <button class="continue-button" type="submit" :disabled="!citySearch">
           Forsæt
           </button>
         </div>
       </form>
 
-      <section v-if="currentRegisterStep === 3" class="postcode-step">
+      <section v-if="false" class="postcode-step">
         <header class="register-header postcode-header">
           <p class="step-label">STEP 3 AF 4</p>
           <h1>Dit postnummer</h1>
@@ -362,9 +370,9 @@ export default {
         </form>
       </section>
 
-      <section v-if="currentRegisterStep === 4" class="profile-image-step">
+      <section v-if="currentRegisterStep === 3" class="profile-image-step">
         <header class="register-header profile-image-header">
-          <p class="step-label">STEP 4 AF 4</p>
+          <p class="step-label">STEP 3 AF 3</p>
           <h1>Tilføj profilbillede</h1>
         </header>
 
@@ -769,5 +777,10 @@ h1 {
 .continue-button {
   background: var(--color-primary);
   color: var(--color-surface);
+}
+
+.continue-button:disabled {
+  background: var(--color-border);
+  cursor: default;
 }
 </style>
