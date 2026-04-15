@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "",
+  name: "Home",
   components: {},
   data() {
     return {};
@@ -30,14 +30,20 @@ export default {
           <v-btn
             class="items_button mt-10"
             size="large"
-            @click="$emit('go-to-items')"
+            @click="$emit('go-to-profile')"
           >
-            Dine genstande
+            Opret profil
           </v-btn>
         </v-col>
 
         <v-col cols="12">
-          <v-btn class="loans_button" size="large"> Dine lån </v-btn>
+          <v-btn
+            class="loans_button"
+            size="large"
+            @click="$emit('go-to-profile')"
+          >
+            Log ind
+          </v-btn>
         </v-col>
       </v-row>
 

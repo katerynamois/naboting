@@ -6,6 +6,7 @@ import ConfirmItemScreen from "./components/ConfirmItemScreen.vue";
 import GenstandPage from "./components/Genstand/GenstandPage.vue";
 import RedigerGenstand from "./components/Genstand/RedigerGenstand.vue";
 import Stepper from "@/components/Stepper.vue";
+import Profile from "@/components/Profile.vue";
 
 export default {
   components: {
@@ -16,6 +17,7 @@ export default {
     GenstandPage,
     RedigerGenstand,
     Stepper,
+    Profile,
   },
   data() {
     return {
@@ -34,6 +36,9 @@ export default {
     },
     goToItems() {
       this.currentPage = "genstandPage";
+    },
+    goToProfile() {
+      this.currentPage = "profile";
     },
     goToPageOne() {
       this.currentPage = "pageOne";
@@ -98,7 +103,7 @@ export default {
 
     <!-- Topbar — vises kun på sider uden egen toolbar -->
     <v-app-bar
-      v-if="currentPage === 'home' || currentPage === 'genstandPage'"
+      v-if="currentPage === 'home' || currentPage === 'profile' || currentPage === 'genstandPage'"
       flat
       class="naboting-bar"
     >
@@ -112,8 +117,8 @@ export default {
     <!-- Burger menu drawer -->
     <v-navigation-drawer v-model="drawer" location="right" temporary width="280">
       <v-list class="pa-0">
-        <v-list-item class="menu-item" @click="drawer = false">Opret dig</v-list-item>
-        <v-list-item class="menu-item" @click="drawer = false">Log ind</v-list-item>
+        <v-list-item class="menu-item" @click="goToProfile(); drawer = false">Opret profil</v-list-item>
+        <v-list-item class="menu-item" @click="goToProfile(); drawer = false">Log ind</v-list-item>
       </v-list>
 
       <v-divider />
@@ -137,7 +142,13 @@ export default {
 
     <v-main>
       <!-- Page navigation -->
-      <Home v-if="currentPage === 'home'" @go-to-items="goToItems" />
+      <Home v-if="currentPage === 'home'" @go-to-profile="goToProfile" />
+
+      <Profile
+        v-if="currentPage === 'profile'"
+        @go-to-page-one="goToPageOne"
+        @go-to-items="goToItems"
+      />
 
       <PageOne
         v-if="currentPage === 'pageOne'"
