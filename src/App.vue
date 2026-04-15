@@ -33,18 +33,31 @@ export default {
       itemToEdit: null,
       drawer: false,
       showLogin: false,
+      profileCreated: false,
+      profileEditRequest: 0,
     };
   },
   methods: {
     goHome() {
-      this.currentPage = "home";
+      this.currentPage = this.profileCreated ? "profile" : "home";
     },
     goToItems() {
       this.currentPage = "genstandPage";
+      this.drawer = false;
     },
     goToProfile() {
+      this.profileCreated = true;
+      this.profileEditRequest = 0;
       this.currentPage = "profile";
       this.showLogin = false;
+      this.drawer = false;
+    },
+    goToProfileEdit() {
+      this.profileCreated = true;
+      this.currentPage = "profile";
+      this.profileEditRequest += 1;
+      this.showLogin = false;
+      this.drawer = false;
     },
     goToRegisterProfile() {
       this.currentPage = "registerProfile";
@@ -59,10 +72,20 @@ export default {
       this.showLogin = false;
     },
     handleLogin() {
+      this.profileCreated = true;
+      this.profileEditRequest = 0;
       this.showLogin = false;
       this.currentPage = "profile";
     },
+    logout() {
+      this.profileCreated = false;
+      this.profileEditRequest = 0;
+      this.currentPage = "home";
+      this.showLogin = false;
+      this.drawer = false;
+    },
     goToPageOne() {
+      this.drawer = false;
       this.currentPage = "pageOne";
       this.currentStep = 1;
       this.pageOneData = null;
@@ -115,6 +138,7 @@ export default {
         this.addDetailsData = null;
       }
       this.currentPage = "genstandPage";
+      this.drawer = false;
     },
   },
 };
@@ -139,8 +163,17 @@ export default {
     <!-- Burger menu drawer -->
     <v-navigation-drawer v-model="drawer" location="right" temporary width="280">
       <v-list class="pa-0">
-        <v-list-item class="menu-item" @click="goToRegisterProfile">Opret profil</v-list-item>
-        <v-list-item class="menu-item" @click="openLogin">Log ind</v-list-item>
+        <template v-if="profileCreated">
+          <v-list-item class="menu-item" @click="goToProfileEdit">Min profil</v-list-item>
+          <v-list-item class="menu-item" @click="goToPageOne">Opret genstand</v-list-item>
+          <v-list-item class="menu-item" @click="goToItems">Dine genstande</v-list-item>
+          <v-list-item class="menu-item" @click="logout">Log ud</v-list-item>
+        </template>
+
+        <template v-else>
+          <v-list-item class="menu-item" @click="goToRegisterProfile">Opret profil</v-list-item>
+          <v-list-item class="menu-item" @click="openLogin">Log ind</v-list-item>
+        </template>
       </v-list>
 
       <v-divider />
@@ -179,6 +212,7 @@ export default {
 
       <Profile
         v-if="currentPage === 'profile'"
+        :edit-request="profileEditRequest"
         @go-to-page-one="goToPageOne"
         @go-to-items="goToItems"
       />
