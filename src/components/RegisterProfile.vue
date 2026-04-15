@@ -15,11 +15,15 @@ export default {
       lastName: "",
       gender: "",
       birthYear: "",
+      citySearch: "",
     };
   },
   methods: {
     goToAboutStep() {
       this.currentRegisterStep = 3;
+    },
+    goToPostcodeStep() {
+      this.currentRegisterStep = 4;
     },
   },
 };
@@ -112,7 +116,7 @@ export default {
       <form
         v-if="currentRegisterStep === 3"
         class="register-form"
-        @submit.prevent="$emit('profile-created')"
+        @submit.prevent="goToPostcodeStep"
       >
         <div class="account-type-toggle" aria-label="Vælg brugertype">
           <button
@@ -173,6 +177,31 @@ export default {
           Forsæt
         </button>
       </form>
+
+      <section v-if="currentRegisterStep === 4" class="postcode-step">
+        <header class="register-header postcode-header">
+          <p class="step-label">STEP 3 AF 5</p>
+          <h1>Dit postnummer</h1>
+        </header>
+
+        <form class="postcode-form" @submit.prevent="$emit('profile-created')">
+          <input
+            v-model="citySearch"
+            class="postcode-input"
+            type="text"
+            placeholder="Søg efter by/postnr"
+            autocomplete="postal-code"
+          />
+
+          <button
+            class="continue-button postcode-button"
+            type="submit"
+            :disabled="!citySearch"
+          >
+            Forsæt
+          </button>
+        </form>
+      </section>
     </v-container>
   </div>
 </template>
@@ -251,6 +280,44 @@ h1 {
 .register-input {
   padding: 0 var(--space-4);
   outline: none;
+}
+
+.postcode-step {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+.postcode-header {
+  margin-bottom: var(--space-8);
+}
+
+.postcode-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.postcode-input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  outline: none;
+  padding: 0 var(--space-4);
+}
+
+.postcode-button {
+  margin: auto auto var(--space-6);
+}
+
+.postcode-button:disabled {
+  background: var(--color-border);
+  cursor: default;
 }
 
 .account-type-toggle {
