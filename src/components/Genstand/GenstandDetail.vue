@@ -34,9 +34,9 @@ export default {
             type: String,
             default: null
         },
-        // Maksimalt antal dage genstanden kan lånes
+        // Maksimal låneperiode for genstanden
         maxDays: {
-            type: Number,
+            type: [Number, String],
             default: null
         },
         // Tilbehør til genstanden - kun vist hvis der er noget
@@ -70,6 +70,13 @@ export default {
         accessoriesList() {
             if (!this.accessories) return []
             return this.accessories.split(',').map(item => item.trim())
+        },
+        maxLoanPeriodText() {
+            if (this.maxDays === null || this.maxDays === undefined || this.maxDays === '') {
+                return 'Ikke angivet'
+            }
+
+            return typeof this.maxDays === 'number' ? `${this.maxDays} dage` : this.maxDays
         }
     },
     methods: {
@@ -124,11 +131,12 @@ export default {
         <!-- To informationsbokse - max låneperiode og tilbehør -->
         <section class="detalje-bokse" aria-label="Genstandsdetaljer">
 
-            <!-- Max låneperiode boks - label øverst, stort tal i midten, enhed nederst -->
+            <!-- Max låneperiode boks -->
             <div class="detalje-boks">
                 <span class="detalje-boks-label-top">Maks. lån</span>
-                <span class="detalje-boks-tal">{{ maxDays }}</span>
-                <span class="detalje-boks-enhed">dage</span>
+                <span class="detalje-boks-tal detalje-boks-tal--periode">
+                    {{ maxLoanPeriodText }}
+                </span>
             </div>
 
             <!-- Tilbehør boks - vises kun hvis der er tilbehør -->
@@ -391,6 +399,11 @@ export default {
     font-weight: 700;
     color: var(--color-neutral);
     line-height: 1;
+}
+
+.detalje-boks-tal--periode {
+    font-size: 24px;
+    line-height: 1.2;
 }
 
 /* Lille enhed under tallet - fx "dage" */
