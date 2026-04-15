@@ -15,11 +15,18 @@ export default {
       lastName: "",
       gender: "",
       birthYear: "",
+      openDropdown: null,
       citySearch: "",
       profileImage: null,
     };
   },
   computed: {
+    genderOptions() {
+      return ["Kvinde", "Mand", "Andet", "Vil ikke oplyse"];
+    },
+    birthYearOptions() {
+      return Array.from({ length: 90 }, (_, index) => 2026 - index - 1);
+    },
     profileInitial() {
       return (this.firstName || "K").trim().charAt(0).toUpperCase() || "K";
     },
@@ -41,6 +48,18 @@ export default {
       }
 
       this.currentRegisterStep -= 1;
+    },
+    toggleDropdown(name) {
+      this.openDropdown = this.openDropdown === name ? null : name;
+    },
+    selectDropdownValue(name, value) {
+      this[name] = value;
+      this.openDropdown = null;
+    },
+    closeDropdown(event) {
+      if (!event.currentTarget.contains(event.relatedTarget)) {
+        this.openDropdown = null;
+      }
     },
     updateProfileImage(event) {
       const file = event.target.files && event.target.files[0];
@@ -181,23 +200,58 @@ export default {
           autocomplete="family-name"
         />
 
-        <div class="select-shell">
-          <select v-model="gender" class="register-select" aria-label="Køn">
-            <option value="" disabled>Køn</option>
-            <option>Kvinde</option>
-            <option>Mand</option>
-            <option>Andet</option>
-            <option>Vil ikke oplyse</option>
-          </select>
+        <div class="select-shell" tabindex="-1" @focusout="closeDropdown">
+          <button
+            type="button"
+            class="register-select"
+            :class="{ 'register-select--placeholder': !gender }"
+            aria-label="Køn"
+            :aria-expanded="openDropdown === 'gender'"
+            @click="toggleDropdown('gender')"
+          >
+            <span>{{ gender || "Køn" }}</span>
+            <v-icon size="18">mdi-chevron-down</v-icon>
+          </button>
+
+          <div v-if="openDropdown === 'gender'" class="select-menu">
+            <button
+              v-for="option in genderOptions"
+              :key="option"
+              type="button"
+              class="select-option"
+              :class="{ 'select-option--active': gender === option }"
+              @click="selectDropdownValue('gender', option)"
+            >
+              {{ option }}
+            </button>
+          </div>
         </div>
 
-        <div class="select-shell">
-          <select v-model="birthYear" class="register-select" aria-label="Fødselsår">
-            <option value="" disabled>Fødselsår</option>
-            <option v-for="year in 90" :key="year">
-              {{ 2026 - year }}
-            </option>
-          </select>
+        <div class="select-shell" tabindex="-1" @focusout="closeDropdown">
+          <button
+            type="button"
+            class="register-select"
+            :class="{ 'register-select--placeholder': !birthYear }"
+            aria-label="Fødselsår"
+            :aria-expanded="openDropdown === 'birthYear'"
+            @click="toggleDropdown('birthYear')"
+          >
+            <span>{{ birthYear || "Fødselsår" }}</span>
+            <v-icon size="18">mdi-chevron-down</v-icon>
+          </button>
+
+          <div v-if="openDropdown === 'birthYear'" class="select-menu select-menu--scroll">
+            <button
+              v-for="year in birthYearOptions"
+              :key="year"
+              type="button"
+              class="select-option"
+              :class="{ 'select-option--active': birthYear === year }"
+              @click="selectDropdownValue('birthYear', year)"
+            >
+              {{ year }}
+            </button>
+          </div>
         </div>
 
         <div class="register-actions">
@@ -551,12 +605,56 @@ h1 {
   border: none;
   border-radius: var(--radius-full);
   background: transparent;
-  color: var(--color-secondary);
+  color: var(--color-neutral);
   font-family: var(--font-body);
   font-size: var(--text-label);
   outline: none;
   padding: 0 var(--space-4);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.register-select--placeholder {
+  color: var(--color-secondary);
+}
+
+.select-menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.select-menu--scroll {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.select-option {
+  width: 100%;
+  min-height: 38px;
+  border: none;
+  background: var(--color-surface);
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  text-align: left;
+  padding: 0 var(--space-4);
+  cursor: pointer;
+}
+
+.select-option:hover,
+.select-option--active {
+  background: var(--color-image-bg);
 }
 
 .terms-row {
