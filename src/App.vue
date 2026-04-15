@@ -174,6 +174,7 @@ export default {
         v-if="currentPage === 'registerProfile'"
         @show-login="openLogin"
         @profile-created="goToProfile"
+        @go-back="goHome"
       />
 
       <Profile

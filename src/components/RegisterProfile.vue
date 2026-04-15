@@ -1,7 +1,7 @@
 <script>
 export default {
   name: "RegisterProfile",
-  emits: ["show-login", "profile-created"],
+  emits: ["show-login", "profile-created", "go-back"],
   data() {
     return {
       currentRegisterStep: 1,
@@ -16,14 +16,35 @@ export default {
       gender: "",
       birthYear: "",
       citySearch: "",
+      profileImage: null,
     };
+  },
+  computed: {
+    profileInitial() {
+      return (this.firstName || "K").trim().charAt(0).toUpperCase() || "K";
+    },
   },
   methods: {
     goToAboutStep() {
-      this.currentRegisterStep = 3;
+      this.currentRegisterStep = 2;
     },
     goToPostcodeStep() {
+      this.currentRegisterStep = 3;
+    },
+    goToProfileImageStep() {
       this.currentRegisterStep = 4;
+    },
+    goBack() {
+      if (this.currentRegisterStep === 1) {
+        this.$emit("go-back");
+        return;
+      }
+
+      this.currentRegisterStep -= 1;
+    },
+    updateProfileImage(event) {
+      const file = event.target.files && event.target.files[0];
+      this.profileImage = file || null;
     },
   },
 };
@@ -33,7 +54,7 @@ export default {
   <div class="register-page">
     <v-container class="register-container">
       <header v-if="currentRegisterStep === 1" class="register-header">
-        <p class="step-label">STEP 1 AF 5</p>
+        <p class="step-label">STEP 1 AF 4</p>
         <h1>Opret bruger</h1>
         <p class="login-text">
           Allerede medlem?
@@ -100,13 +121,19 @@ export default {
           </span>
         </label>
 
-        <button class="continue-button" type="submit">
+        <div class="register-actions">
+          <button class="back-button" type="button" @click="goBack">
+            Tilbage
+          </button>
+
+          <button class="continue-button" type="submit">
           Forsæt
-        </button>
+          </button>
+        </div>
       </form>
 
-      <header v-if="currentRegisterStep === 3" class="register-header register-header--about">
-        <p class="step-label">STEP 3 AF 5</p>
+      <header v-if="currentRegisterStep === 2" class="register-header register-header--about">
+        <p class="step-label">STEP 2 AF 4</p>
         <h1>Mere om dig</h1>
         <p class="login-text">
           Du kan både oprette dig som erhverv eller som privatperson
@@ -114,7 +141,7 @@ export default {
       </header>
 
       <form
-        v-if="currentRegisterStep === 3"
+        v-if="currentRegisterStep === 2"
         class="register-form"
         @submit.prevent="goToPostcodeStep"
       >
@@ -173,18 +200,24 @@ export default {
           </select>
         </div>
 
-        <button class="continue-button" type="submit">
+        <div class="register-actions">
+          <button class="back-button" type="button" @click="goBack">
+            Tilbage
+          </button>
+
+          <button class="continue-button" type="submit">
           Forsæt
-        </button>
+          </button>
+        </div>
       </form>
 
-      <section v-if="currentRegisterStep === 4" class="postcode-step">
+      <section v-if="currentRegisterStep === 3" class="postcode-step">
         <header class="register-header postcode-header">
-          <p class="step-label">STEP 3 AF 5</p>
+          <p class="step-label">STEP 3 AF 4</p>
           <h1>Dit postnummer</h1>
         </header>
 
-        <form class="postcode-form" @submit.prevent="$emit('profile-created')">
+        <form class="postcode-form" @submit.prevent="goToProfileImageStep">
           <input
             v-model="citySearch"
             class="postcode-input"
@@ -193,13 +226,54 @@ export default {
             autocomplete="postal-code"
           />
 
-          <button
-            class="continue-button postcode-button"
-            type="submit"
-            :disabled="!citySearch"
-          >
+          <div class="register-actions postcode-actions">
+            <button class="back-button" type="button" @click="goBack">
+              Tilbage
+            </button>
+
+            <button
+              class="continue-button"
+              type="submit"
+              :disabled="!citySearch"
+            >
             Forsæt
-          </button>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section v-if="currentRegisterStep === 4" class="profile-image-step">
+        <header class="register-header profile-image-header">
+          <p class="step-label">STEP 4 AF 4</p>
+          <h1>Tilføj profilbillede</h1>
+        </header>
+
+        <form class="profile-image-form" @submit.prevent="$emit('profile-created')">
+          <div class="avatar-picker">
+            <div class="profile-avatar" aria-hidden="true">
+              {{ profileInitial }}
+            </div>
+
+            <label class="edit-avatar-button" aria-label="Tilføj profilbillede">
+              <v-icon size="18">mdi-pencil</v-icon>
+              <input
+                class="avatar-input"
+                type="file"
+                accept="image/*"
+                @change="updateProfileImage"
+              />
+            </label>
+          </div>
+
+          <div class="register-actions profile-image-actions">
+            <button class="back-button" type="button" @click="goBack">
+              Tilbage
+            </button>
+
+            <button class="continue-button" type="submit">
+            Forsæt
+            </button>
+          </div>
         </form>
       </section>
     </v-container>
@@ -311,13 +385,78 @@ h1 {
   padding: 0 var(--space-4);
 }
 
-.postcode-button {
+.postcode-actions {
   margin: auto auto var(--space-6);
 }
 
-.postcode-button:disabled {
+.postcode-actions .continue-button:disabled {
   background: var(--color-border);
   cursor: default;
+}
+
+.profile-image-step {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-image-header {
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-12);
+}
+
+.profile-image-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-picker {
+  position: relative;
+  width: 154px;
+  height: 154px;
+  margin-top: var(--space-4);
+}
+
+.profile-avatar {
+  width: 154px;
+  height: 154px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 64px;
+  font-weight: 400;
+}
+
+.edit-avatar-button {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.avatar-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.profile-image-actions {
+  margin-top: var(--space-8);
 }
 
 .account-type-toggle {
@@ -438,18 +577,33 @@ h1 {
   accent-color: var(--color-primary);
 }
 
-.continue-button {
+.register-actions {
   align-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.back-button,
+.continue-button {
   min-width: 108px;
   min-height: 38px;
-  margin-top: var(--space-3);
   border: none;
   border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: var(--color-surface);
   font-family: var(--font-body);
   font-size: var(--text-label);
   font-weight: 800;
   cursor: pointer;
+}
+
+.back-button {
+  background: var(--color-surface);
+  color: var(--color-neutral);
+}
+
+.continue-button {
+  background: var(--color-primary);
+  color: var(--color-surface);
 }
 </style>
