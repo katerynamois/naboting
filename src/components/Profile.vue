@@ -26,8 +26,6 @@ export default {
     return {
       toolsImage,
       showLoans: false,
-      showProfileDetails: false,
-      showCreatedWelcome: false,
       welcomeTimer: null,
       isEditingProfile: false,
       profile: {
@@ -92,14 +90,9 @@ export default {
     },
     showTemporaryWelcome() {
       window.clearTimeout(this.welcomeTimer);
-      this.showCreatedWelcome = true;
-      this.welcomeTimer = window.setTimeout(() => {
-        this.showCreatedWelcome = false;
-      }, 4000);
     },
     startProfileEdit() {
       window.clearTimeout(this.welcomeTimer);
-      this.showCreatedWelcome = false;
       this.profileDraft = {
         firstName: this.profile.firstName,
         lastName: this.profile.lastName,
@@ -123,7 +116,6 @@ export default {
       this.isEditingProfile = false;
       this.profileError = "";
       this.profileMessage = "";
-      this.showProfileDetails = false;
     },
     saveProfileEdit() {
       if (!this.profileDraft.firstName.trim() || !this.profileDraft.lastName.trim()) {
@@ -189,9 +181,6 @@ export default {
       this.profileError = "";
       this.isEditingProfile = false;
       this.$emit("update-profile", { ...this.profile });
-    },
-    toggleProfileDetails() {
-      this.showProfileDetails = !this.showProfileDetails;
     },
   },
   mounted() {
@@ -386,6 +375,17 @@ export default {
       <p v-if="profileMessage" class="profile-message">{{ profileMessage }}</p>
 
       <section v-if="!isEditingProfile" class="profile-actions" aria-label="Profil handlinger">
+        <div class="profile-view-header">
+          <div class="profile-view-avatar" aria-hidden="true">
+            {{ profileName.charAt(0).toUpperCase() }}
+          </div>
+          <div class="profile-view-info">
+            <p class="profile-view-name">{{ profileName }}</p>
+            <p v-if="locationText" class="profile-view-location">{{ locationText }}</p>
+            <p v-if="profile.email" class="profile-view-email">{{ profile.email }}</p>
+          </div>
+        </div>
+
         <img
           :src="toolsImage"
           alt="V&aelig;rkt&oslash;j til at oprette genstande"
@@ -427,14 +427,6 @@ export default {
           Mine l&aring;n
         </v-btn>
 
-      </section>
-
-      <section v-if="!isEditingProfile && showProfileDetails" class="profile-detail-section" aria-live="polite">
-        <h2>Min profil</h2>
-        <p><strong>Navn:</strong> {{ profileName }}</p>
-        <p v-if="profile.email"><strong>Email:</strong> {{ profile.email }}</p>
-        <p v-if="profile.phone"><strong>Telefon:</strong> {{ profile.phone }}</p>
-        <p v-if="locationText"><strong>Adresse:</strong> {{ locationText }}</p>
       </section>
 
       <section v-if="!isEditingProfile && showLoans" class="loan-section" aria-live="polite">
@@ -526,6 +518,51 @@ export default {
   font-weight: 800;
 }
 
+.profile-view-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.profile-view-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-view-info {
+  min-width: 0;
+}
+
+.profile-view-name {
+  margin: 0 0 2px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  color: var(--color-neutral);
+}
+
+.profile-view-location,
+.profile-view-email {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  color: var(--color-secondary);
+}
+
 .profile-actions {
   display: flex;
   flex-direction: column;
@@ -562,7 +599,6 @@ export default {
   text-align: center;
 }
 
-.profile-detail-section,
 .loan-section {
   margin-top: var(--space-6);
   padding: var(--space-4);
@@ -571,7 +607,6 @@ export default {
   border-radius: var(--radius-lg);
 }
 
-.profile-detail-section h2,
 .loan-section h2 {
   margin: 0 0 6px;
   font-family: var(--font-display);
@@ -579,16 +614,11 @@ export default {
   color: var(--color-neutral);
 }
 
-.profile-detail-section p,
 .loan-section p {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--text-body);
   color: var(--color-secondary);
-}
-
-.profile-detail-section p + p {
-  margin-top: var(--space-2);
 }
 
 @media (max-width: 520px) {

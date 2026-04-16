@@ -127,7 +127,7 @@ export default {
 </script>
 
 <template>
-  <v-container class="pa-4" max-width="600">
+  <v-container class="pa-4 pb-24" max-width="600">
     <v-toolbar flat color="white" class="top-toolbar">
       <!-- <v-btn icon variant="text" @click="$emit('goBack')">
           <v-icon>mdi-chevron-left</v-icon>
@@ -209,16 +209,16 @@ export default {
         class="category-toggle d-flex flex-wrap ga-2"
         mandatory
       >
-        <v-btn value="Elektronik" rounded="xl" variant="#eeece8"
+        <v-btn value="Elektronik" rounded="xl" variant="tonal"
           >Elektronik</v-btn
         >
-        <v-btn value="Værktøj" rounded="xl" variant="#eeece8">Værktøj</v-btn>
-        <v-btn value="Sport" rounded="xl" variant="#eeece8">Sport</v-btn>
-        <v-btn value="Køkken" rounded="xl" variant="#eeece8">Køkken</v-btn>
-        <v-btn value="Haveredskaber" rounded="xl" variant="#eeece8"
+        <v-btn value="Værktøj" rounded="xl" variant="tonal">Værktøj</v-btn>
+        <v-btn value="Sport" rounded="xl" variant="tonal">Sport</v-btn>
+        <v-btn value="Køkken" rounded="xl" variant="tonal">Køkken</v-btn>
+        <v-btn value="Haveredskaber" rounded="xl" variant="tonal"
           >Haveredskaber</v-btn
         >
-        <v-btn value="Andet" rounded="xl" variant="#eeece8">Andet</v-btn>
+        <v-btn value="Andet" rounded="xl" variant="tonal">Andet</v-btn>
       </v-btn-toggle>
       
 
@@ -339,6 +339,10 @@ export default {
 }
 
 .bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: white;
   border-top: 1px solid #e5e7eb;
   padding: 16px;

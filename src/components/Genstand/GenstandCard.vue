@@ -155,20 +155,20 @@ export default {
 
 /* Tilgængelig - grøn */
 .status-tilgaengelig {
-    background: #e8f0e3;
-    color: #2d4a1e;
+    background: var(--color-tilgaengelig-bg);
+    color: var(--color-tilgaengelig-text);
 }
 
 /* Udlånt - orange */
 .status-udlaant {
-    background: #f7e8d8;
-    color: #7a3810;
+    background: var(--color-udlaant-bg);
+    color: var(--color-udlaant-text);
 }
 
 /* Inaktiv - grå */
 .status-inaktiv {
-    background: #eceae8;
-    color: #3a3836;
+    background: var(--color-inaktiv-bg);
+    color: var(--color-inaktiv-text);
 }
 
 </style>

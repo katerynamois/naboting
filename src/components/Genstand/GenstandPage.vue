@@ -120,17 +120,17 @@ export default {
                 Ingen genstande matcher det valgte filter
             </p>
 
-        </div>
+            <div class="opret-knap-wrapper">
+                <v-btn
+                    color="primary"
+                    rounded="lg"
+                    class="opret-knap"
+                    @click="$emit('go-to-page-one')"
+                >
+                    Opret ny genstand
+                </v-btn>
+            </div>
 
-        <div class="opret-knap-wrapper">
-            <v-btn
-                color="primary"
-                rounded="lg"
-                class="opret-knap"
-                @click="$emit('go-to-page-one')"
-            >
-                Opret ny genstand
-            </v-btn>
         </div>
 
     </main>

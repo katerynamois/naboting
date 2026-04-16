@@ -108,6 +108,11 @@ export default {
       this.showLogin = false;
       this.drawer = false;
     },
+    goBackFromConfirm() {
+      this.currentPage = "addDetails";
+      this.currentStep = 2;
+      this.drawer = false;
+    },
     goToPageOne() {
       if (this.currentPage !== "addDetails") {
         this.createFlowReturnPage = this.currentPage;
@@ -271,7 +276,7 @@ export default {
         v-if="currentPage === 'confirmItem'"
         :currentStep="currentStep"
         :itemData="{ ...pageOneData, ...addDetailsData }"
-        @goBack="goToAddDetails"
+        @goBack="goBackFromConfirm"
         @createItem="goToItems"
         @goToGenstandPage="goToGenstandPage"
       />

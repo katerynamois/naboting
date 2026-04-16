@@ -7,14 +7,24 @@ export default {
       mode: "login",
       email: "",
       password: "",
+      loginError: "",
     };
   },
   methods: {
     submitLogin() {
+      if (!this.email.trim() || !this.password.trim()) {
+        this.loginError = "Udfyld email og password.";
+        return;
+      }
+      this.loginError = "";
       this.$emit("login", {
         email: this.email,
         password: this.password,
       });
+    },
+    goToLogin() {
+      this.mode = "login";
+      this.loginError = "";
     },
     sendPasswordReset() {
       this.mode = "resetSent";
@@ -62,6 +72,8 @@ export default {
           </button>
         </form>
 
+        <p v-if="loginError" class="login-error">{{ loginError }}</p>
+
         <button type="button" class="forgot-button" @click="mode = 'reset'">
           Har du glemt dit password?
         </button>
@@ -87,6 +99,10 @@ export default {
         <p v-if="mode === 'resetSent'" class="reset-message">
           Tjek din email for et link til at nulstille dit password.
         </p>
+
+        <button type="button" class="forgot-button" @click="goToLogin">
+          Tilbage til log ind
+        </button>
       </template>
     </section>
   </div>
@@ -211,6 +227,14 @@ h1 {
   font-family: var(--font-body);
   font-size: var(--text-body);
   cursor: pointer;
+}
+
+.login-error {
+  margin: 12px 0 0;
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 700;
 }
 
 .reset-message {

@@ -22,6 +22,7 @@ export default {
       openDropdown: null,
       citySearch: "",
       profileImage: null,
+      profileImagePreview: null,
       registerError: "",
     };
   },
@@ -138,6 +139,15 @@ export default {
     updateProfileImage(event) {
       const file = event.target.files && event.target.files[0];
       this.profileImage = file || null;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.profileImagePreview = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.profileImagePreview = null;
+      }
     },
     submitProfileCreated() {
       if (!this.isValidEmail(this.email) || !this.isValidDanishPhone(this.phone)) {
@@ -444,7 +454,13 @@ export default {
 
         <form class="profile-image-form" @submit.prevent="submitProfileCreated">
           <div class="avatar-picker">
-            <div class="profile-avatar" aria-hidden="true">
+            <img
+              v-if="profileImagePreview"
+              :src="profileImagePreview"
+              class="profile-avatar profile-avatar--img"
+              alt="Profilbillede preview"
+            />
+            <div v-else class="profile-avatar" aria-hidden="true">
               {{ profileInitial }}
             </div>
 
@@ -587,6 +603,11 @@ h1 {
   font-family: var(--font-body);
   font-size: 64px;
   font-weight: 400;
+}
+
+.profile-avatar--img {
+  object-fit: cover;
+  background: none;
 }
 
 .edit-avatar-button {

@@ -170,12 +170,12 @@ export default {
 
         <div class="input_wrapper">
           <input
-          type= "text"
+            type="text"
             placeholder="F.eks. oplader, taske..."
             v-model="extraName"
             class="custom_input"
             @keyup.enter="addExtra"
-          ></input>
+          />
 
           <v-btn class="add_button" icon @click="addExtra"> + </v-btn>
         </div>
