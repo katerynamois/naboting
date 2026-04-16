@@ -85,7 +85,7 @@ export default {
     },
     watch: {
     },
-    emits: ['gåTilbage', 'update-status', 'rediger-genstand']
+    emits: ['gåTilbage', 'update-status']
 }
 </script>
 
@@ -97,9 +97,6 @@ export default {
             <!-- Tilbage-knap - sender gåTilbage event op til forælderen -->
             <button class="tilbage-knap" @click="$emit('gåTilbage')">
                 Tilbage
-            </button>
-            <button class="rediger-knap" @click="$emit('rediger-genstand')">
-                Rediger
             </button>
         </header>
 
@@ -218,19 +215,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--space-4);
-}
-
-/* Rediger-knap */
-.rediger-knap {
-    background: transparent;
-    color: var(--color-primary);
-    border: none;
-    font-family: var(--font-body);
-    font-size: var(--text-body);
-    font-weight: 600;
-    cursor: pointer;
-    padding: var(--space-3) 0;
-    min-height: 44px;
 }
 
 /* Tilbage-knap - gennemsigtig baggrund */

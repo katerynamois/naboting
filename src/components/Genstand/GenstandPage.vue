@@ -57,7 +57,7 @@ export default {
             }
         }
     },
-    emits: ['go-to-page-one', 'update-status', 'rediger-genstand']
+    emits: ['go-to-page-one', 'update-status']
 }
 </script>
 
@@ -80,7 +80,6 @@ export default {
             :activeLoans="selectedItem.activeLoans"
             @gåTilbage="selectedItem = null"
             @update-status="updateItemStatus"
-            @rediger-genstand="$emit('rediger-genstand', selectedItem)"
         />
 
         <!-- Liste visning - skjules når en genstand er valgt -->
