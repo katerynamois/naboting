@@ -18,14 +18,14 @@ export default {
       extrasList: [],
       extraName: "",
       condition: null,
-      maxLoanPeriod: null,
-      customLoanPeriod: "",
+      pickupAddress: "",
+      quantity: 1,
+      minimumLoanPeriod: 1,
+      pricePerDay: 0,
       errors: {
         hasExtra: "", 
         extrasList: "",
         condition: "",
-        maxLoanPeriod: "",
-        customLoanPeriod: "",
       }
     };
   },
@@ -52,13 +52,12 @@ export default {
       this.condition = value;
       this.errors.condition = "";
     },
-      /* Vælg max låneperiode */
-    selectMaxLoanPeriod(value) {
-      this.maxLoanPeriod = value;
-      this.errors.maxLoanPeriod = "";
-      if (value !== "Andet") {
-        this.customLoanPeriod = "";
-        this.errors.customLoanPeriod = "";
+    incrementField(field) {
+      this[field] += 1;
+    },
+    decrementField(field, minValue) {
+      if (this[field] > minValue) {
+        this[field] -= 1;
       }
     },
     /* Validering af inputfelter før næste skridt */
@@ -86,20 +85,6 @@ export default {
         this.errors.condition = "";
       }
 
-      if (!this.maxLoanPeriod) {
-        this.errors.maxLoanPeriod = "Dette felt skal udfyldes";
-        valid = false;
-      } else {
-        this.errors.maxLoanPeriod = "";
-      }
-
-      if (this.maxLoanPeriod === "Andet" && this.customLoanPeriod.trim() === "") {
-        this.errors.customLoanPeriod = "Indtast en låneperiode";
-        valid = false;
-      } else {
-        this.errors.customLoanPeriod = "";
-      }
-
       return valid;
     },
    /*  Gem detaljer og gå videre til næste skridt */
@@ -109,8 +94,10 @@ export default {
           hasExtra: this.hasExtra,
           extras: this.extrasList,
           condition: this.condition,
-          maxLoanPeriod:
-            this.maxLoanPeriod === "Andet" ? this.customLoanPeriod : this.maxLoanPeriod,
+          pickupAddress: this.pickupAddress.trim(),
+          quantity: this.quantity,
+          minimumLoanPeriod: this.minimumLoanPeriod,
+          pricePerDay: this.pricePerDay,
         };
         this.$emit("save-details", details,);
         this.$emit("go-to-confirm-item")
@@ -237,78 +224,96 @@ export default {
       </v-col>
     </v-row>
 
-    <!-- Vælg max låneperiode -->
+    <section class="rental-options-section">
+      <h3>Angiv hvor dit produkt skal afhentes</h3>
+      <div class="address_input_wrapper">
+        <v-icon class="address_icon" size="22">mdi-map-marker</v-icon>
+        <input
+          v-model="pickupAddress"
+          type="text"
+          placeholder="Brug en anden adresse"
+          class="address_input"
+        />
+      </div>
 
-    <h4>Max låneperiode<span> *</span></h4>
-    <v-row>
-      <v-col cols="12">
-        <v-btn
-          class="ma-2 condition_button"
-          size="large"
-          :class="{ selected: maxLoanPeriod === '1 dag' }"
-          @click="selectMaxLoanPeriod('1 dag')"
-        >
-          1 dag
-        </v-btn>
-        <v-btn
-          class="ma-2 condition_button"
-          size="large"
-          :class="{ selected: maxLoanPeriod === '3 dage' }"
-          @click="selectMaxLoanPeriod('3 dage')"
-        >
-          3 dage
-        </v-btn>
-        <v-btn
-          class="ma-2 condition_button"
-          size="large"
-          :class="{ selected: maxLoanPeriod === '1 uge' }"
-          @click="selectMaxLoanPeriod('1 uge')"
-        >
-          1 uge
-        </v-btn>
-        <v-btn
-          class="ma-2 condition_button"
-          size="large"
-          :class="{ selected: maxLoanPeriod === '2 uger' }"
-          @click="selectMaxLoanPeriod('2 uger')"
-        >
-          2 uger
-        </v-btn>
-        <v-btn
-          class="ma-2 condition_button"
-          size="large"
-          :class="{ selected: maxLoanPeriod === '1 måned' }"
-          @click="selectMaxLoanPeriod('1 måned')"
-        >
-          1 måned
-        </v-btn>
-        <v-btn
-          class="ma-2 condition_button"
-          size="large"
-          :class="{ selected: maxLoanPeriod === 'Andet' }"
-          @click="selectMaxLoanPeriod('Andet')"
-        >
-          Andet
-        </v-btn>
-        <div v-if="errors.maxLoanPeriod" class="error-text">{{ errors.maxLoanPeriod }}</div>
-      </v-col>
-    </v-row>
-
-    <!-- Inputfelt for brugerdefineret låneperiode, vises kun hvis "Andet" er valgt -->
-
-    <v-row v-if="maxLoanPeriod === 'Andet'">
-      <v-col cols="12">
-        <div class="input_wrapper">
-          <input
-            type="text"
-            placeholder="F.eks. 10 dage, 3 måneder..."
-            v-model="customLoanPeriod"
-            class="custom_input"
-          />
+      <div class="number_field_group">
+        <h3>Antal</h3>
+        <p>Lad lejer vide hvor mange du har</p>
+        <div class="number_stepper">
+          <span>{{ quantity }}</span>
+          <div class="number_controls">
+            <button
+              type="button"
+              class="step_button decrement"
+              aria-label="Reducer antal"
+              @click="decrementField('quantity', 1)"
+            >
+              -
+            </button>
+            <button
+              type="button"
+              class="step_button increment"
+              aria-label="Forøg antal"
+              @click="incrementField('quantity')"
+            >
+              +
+            </button>
+          </div>
         </div>
-        <div v-if="errors.customLoanPeriod" class="error-text">{{ errors.customLoanPeriod }}</div>
-      </v-col>
-    </v-row>
+      </div>
+
+      <div class="number_field_group">
+        <h3>Minimum lejeperiode</h3>
+        <p>Hvor mange dage skal lejer mindst leje?</p>
+        <div class="number_stepper">
+          <span>{{ minimumLoanPeriod }}</span>
+          <div class="number_controls">
+            <button
+              type="button"
+              class="step_button decrement"
+              aria-label="Reducer minimum lejeperiode"
+              @click="decrementField('minimumLoanPeriod', 1)"
+            >
+              -
+            </button>
+            <button
+              type="button"
+              class="step_button increment"
+              aria-label="Forøg minimum lejeperiode"
+              @click="incrementField('minimumLoanPeriod')"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="number_field_group">
+        <h3>Pris per dag?</h3>
+        <p>Prisen er i danske kr.</p>
+        <div class="number_stepper">
+          <span>{{ pricePerDay }}</span>
+          <div class="number_controls">
+            <button
+              type="button"
+              class="step_button decrement"
+              aria-label="Reducer pris per dag"
+              @click="decrementField('pricePerDay', 0)"
+            >
+              -
+            </button>
+            <button
+              type="button"
+              class="step_button increment"
+              aria-label="Forøg pris per dag"
+              @click="incrementField('pricePerDay')"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
    <!--  Tilbage og næste knapper -->
       
@@ -431,6 +436,103 @@ export default {
   min-width: 100px;
   border-radius: var(--radius-md);
   box-shadow: none;
+}
+
+.rental-options-section {
+  margin: 24px 0;
+}
+
+.rental-options-section h3 {
+  margin: 0 0 8px;
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.address_input_wrapper,
+.number_stepper {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+
+.address_input_wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  margin-bottom: 32px;
+}
+
+.address_icon {
+  color: color-mix(in srgb, var(--color-primary) 80%, #ffffff);
+  flex-shrink: 0;
+}
+
+.address_input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+}
+
+.number_field_group {
+  margin-top: 26px;
+}
+
+.number_field_group p {
+  margin: 0 0 8px;
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-style: italic;
+}
+
+.number_stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 12px;
+  overflow: hidden;
+}
+
+.number_stepper span {
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+}
+
+.number_controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+.step_button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.step_button.decrement {
+  background: #b8b6b3;
+}
+
+.step_button.increment {
+  background: #f0a21a;
 }
 
 

@@ -304,6 +304,7 @@ export default {
 }
 :deep(.v-field) {
   --v-field-border-width: 3px;
+  background-color: #ffffff;
 }
 
 .upload-card {

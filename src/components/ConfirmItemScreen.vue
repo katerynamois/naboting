@@ -29,7 +29,10 @@ export default {
         { label: "Mærke", value: d.brand || 'Intet mærke' },
         { label: "Kategori", value: d.category || '—' },
         { label: "Stand", value: d.condition || '—' },
-        { label: "Max låneperiode", value: d.maxLoanPeriod || '—' },
+        { label: "Afhentning", value: d.pickupAddress || 'Bruger profiladresse' },
+        { label: "Antal", value: d.quantity || 1 },
+        { label: "Minimum lejeperiode", value: d.minimumLoanPeriod ? `${d.minimumLoanPeriod} dage` : '1 dag' },
+        { label: "Pris per dag", value: `${d.pricePerDay || 0} kr.` },
         { label: "Tilbehør", value: d.extras && d.extras.length ? d.extras.join(', ') : 'Intet tilbehør tilføjet' },
       ];
     },
