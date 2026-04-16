@@ -422,7 +422,7 @@ export default {
           size="large"
           elevation="0"
           class="profile-button"
-          @click="showLoans = true"
+          @click="showLoans = !showLoans"
         >
           Mine l&aring;n
         </v-btn>
