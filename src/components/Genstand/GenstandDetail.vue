@@ -9,6 +9,10 @@ export default {
     },
     props: {
         // Alle oplysninger om den valgte genstand
+        id: {
+            type: [Number, String],
+            required: true
+        },
         title: {
             type: String,
             required: true
@@ -53,10 +57,6 @@ export default {
             type: Number,
             default: 0
         },
-        rating: {
-            type: Number,
-            default: null
-        },
     },
     computed: {
         // Returnerer den korrekte CSS-klasse baseret på status
@@ -80,25 +80,27 @@ export default {
         }
     },
     methods: {
+        updateStatus(newStatus) {
+            this.$emit('update-status', {
+                id: this.id,
+                status: newStatus
+            })
+        }
     },
     watch: {
     },
-    emits: ['gåTilbage', 'rediger']
+    emits: ['gåTilbage', 'update-status']
 }
 </script>
 
 <template>
     <div class="detalje-side">
 
-        <!-- Topbar med tilbage-knap og rediger-knap -->
+        <!-- Topbar med tilbage-knap -->
         <header class="detalje-header">
             <!-- Tilbage-knap - sender gåTilbage event op til forælderen -->
             <button class="tilbage-knap" @click="$emit('gåTilbage')">
-                ← Tilbage
-            </button>
-            <!-- Rediger-knap -->
-            <button class="rediger-knap" @click="$emit('rediger')">
-                ✏️ Rediger
+                Tilbage
             </button>
         </header>
 
@@ -143,7 +145,6 @@ export default {
             <div v-if="accessories" class="detalje-boks detalje-boks-tilbehoer">
                 <!-- Ikon og overskrift side om side øverst i boksen -->
                 <div class="detalje-boks-top">
-                    <span class="detalje-boks-ikon" aria-hidden="true">📦</span>
                     <h3 class="detalje-boks-overskrift">Tilbehør</h3>
                 </div>
                 <!-- Hvert tilbehør vises som en chip -->
@@ -168,11 +169,21 @@ export default {
                 <p class="detalje-ejer-navn">Din genstand</p>
                 <p class="detalje-ejer-dato">Oprettet 12. marts 2026</p>
             </div>
-            <!-- Status tag ved siden af ejer info -->
-            <span class="detalje-ejer-status" :class="statusClass">
-                <span class="detalje-status-prik" aria-hidden="true"></span>
-                {{ status }}
-            </span>
+            <div class="detalje-status-actions">
+                <button
+                    v-for="option in ['Tilgængelig', 'Udlånt', 'Inaktiv']"
+                    :key="option"
+                    class="status-option"
+                    :class="[
+                        `status-option--${option.toLowerCase().replace('æ', 'ae').replace('å', 'aa')}`,
+                        { 'status-option--active': status === option }
+                    ]"
+                    type="button"
+                    @click="updateStatus(option)"
+                >
+                    {{ option }}
+                </button>
+            </div>
         </section>
 
         <!-- Statistik sektion - kun synlig for ejeren -->
@@ -186,11 +197,6 @@ export default {
             <div class="detalje-stat-boks">
                 <span class="detalje-stat-tal">{{ activeLoans }}</span>
                 <span class="detalje-stat-label">Aktive lån</span>
-            </div>
-            <!-- Vurdering med stjerne -->
-            <div class="detalje-stat-boks">
-                <span class="detalje-stat-tal">{{ rating }} ⭐</span>
-                <span class="detalje-stat-label">Vurdering</span>
             </div>
         </section>
 
@@ -207,10 +213,10 @@ export default {
     box-sizing: border-box;
 }
 
-/* Topbar - tilbage og rediger knapper side om side */
+/* Topbar */
 .detalje-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: var(--space-4);
 }
@@ -218,7 +224,7 @@ export default {
 /* Tilbage-knap - gennemsigtig baggrund */
 .tilbage-knap {
     background: transparent;
-    color: var(--color-neutral);
+    color: #111111;
     border: none;
     font-family: var(--font-body);
     font-size: var(--text-body);
@@ -228,34 +234,20 @@ export default {
     min-height: 44px;
 }
 
-/* Rediger-knap - grøn baggrund med hvid tekst */
-.rediger-knap {
-    background: var(--color-primary);
-    color: #ffffff;
-    border: none;
-    border-radius: var(--radius-md);
-    font-family: var(--font-body);
-    font-size: var(--text-body);
-    font-weight: 500;
-    cursor: pointer;
-    padding: var(--space-3) var(--space-4);
-    min-height: 44px;
-}
-
 /* Billedwrapper - position relative så status tag kan placeres i hjørnet */
 .detalje-billede-wrapper {
     position: relative;
     margin: 0 0 20px 0;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: var(--color-image-bg);
+    background: #ffffff;
 }
 
 /* Billedet fylder hele bredden */
 .detalje-billede {
     width: 100%;
     height: 220px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 
@@ -366,13 +358,7 @@ export default {
     margin-bottom: 8px;
 }
 
-/* Ikon i boksen */
-.detalje-boks-ikon {
-    font-size: 18px;
-    flex-shrink: 0;
-}
-
-/* Overskrift ved siden af ikonet */
+/* Overskrift i boksen */
 .detalje-boks-overskrift {
     font-family: var(--font-body);
     font-size: 13px;
@@ -441,6 +427,7 @@ export default {
     padding: var(--space-4);
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--space-3);
     margin-bottom: var(--space-4);
     margin-top: 4px;
@@ -486,18 +473,43 @@ export default {
     white-space: nowrap;
 }
 
-/* Status tag i ejer sektionen - sidder i rækken ikke over billedet */
-.detalje-ejer-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+.detalje-status-actions {
+    flex: 0 0 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+}
+
+.status-option {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    color: var(--color-neutral);
+    cursor: pointer;
     font-family: var(--font-body);
-    font-size: 13px;
+    font-size: var(--text-meta);
     font-weight: 600;
-    padding: 5px 11px;
-    border-radius: var(--radius-full);
-    min-height: 32px;
-    flex-shrink: 0;
+    min-height: 40px;
+    padding: 0 var(--space-2);
+}
+
+.status-option--active {
+    border-color: transparent;
+}
+
+.status-option--tilgaengelig.status-option--active {
+    background: var(--color-tilgaengelig-bg);
+    color: var(--color-tilgaengelig-text);
+}
+
+.status-option--udlaant.status-option--active {
+    background: var(--color-udlaant-bg);
+    color: var(--color-udlaant-text);
+}
+
+.status-option--inaktiv.status-option--active {
+    background: var(--color-inaktiv-bg);
+    color: var(--color-inaktiv-text);
 }
 
 /* Statistik sektion - tre bokse side om side */

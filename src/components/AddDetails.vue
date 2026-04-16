@@ -18,7 +18,6 @@ export default {
       extrasList: [],
       extraName: "",
       condition: null,
-      pickupAddress: "",
       quantity: 1,
       minimumLoanPeriod: 1,
       pricePerDay: 0,
@@ -102,7 +101,6 @@ export default {
           hasExtra: this.hasExtra,
           extras: this.extrasList,
           condition: this.condition,
-          pickupAddress: this.pickupAddress.trim(),
           quantity: this.quantity,
           minimumLoanPeriod: this.minimumLoanPeriod,
           pricePerDay: this.pricePerDay,
@@ -233,17 +231,6 @@ export default {
     </v-row>
 
     <section class="rental-options-section">
-      <h3>Angiv hvor dit produkt skal afhentes</h3>
-      <div class="address_input_wrapper">
-        <v-icon class="address_icon" size="22">mdi-map-marker</v-icon>
-        <input
-          v-model="pickupAddress"
-          type="text"
-          placeholder="Brug en anden adresse"
-          class="address_input"
-        />
-      </div>
-
       <div class="number_field_group">
         <h3>Antal</h3>
         <p>Lad lejer vide hvor mange du har</p>
@@ -470,36 +457,12 @@ export default {
   font-weight: 800;
 }
 
-.address_input_wrapper,
 .number_stepper {
   width: 100%;
   min-height: 42px;
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
   background: #ffffff;
-}
-
-.address_input_wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  margin-bottom: 32px;
-}
-
-.address_icon {
-  color: color-mix(in srgb, var(--color-primary) 80%, #ffffff);
-  flex-shrink: 0;
-}
-
-.address_input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--color-neutral);
-  font-family: var(--font-body);
-  font-size: var(--text-label);
 }
 
 .number_field_group {

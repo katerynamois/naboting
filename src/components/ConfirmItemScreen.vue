@@ -29,7 +29,6 @@ export default {
         { label: "Mærke", value: d.brand || 'Intet mærke' },
         { label: "Kategori", value: d.category || '—' },
         { label: "Stand", value: d.condition || '—' },
-        { label: "Afhentning", value: d.pickupAddress || 'Bruger profiladresse' },
         { label: "Antal", value: d.quantity || 1 },
         { label: "Minimum lejeperiode", value: d.minimumLoanPeriod ? `${d.minimumLoanPeriod} dage` : '1 dag' },
         { label: "Pris per dag", value: `${d.pricePerDay || 0} kr.` },
@@ -246,7 +245,12 @@ export default {
 }
 
 .info-card {
+  background-color: #ffffff;
   border-color: #e5e7eb;
+}
+
+.info-list {
+  padding-bottom: 96px;
 }
 
 .field-label {

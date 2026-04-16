@@ -38,6 +38,15 @@ export default {
         // Kaldes når et kort klikkes - finder den valgte genstand ud fra id
         visDetaljer(id) {
             this.selectedItem = this.items.find(item => item.id === id)
+        },
+        updateItemStatus(payload) {
+            if (this.selectedItem && this.selectedItem.id === payload.id) {
+                this.selectedItem = {
+                    ...this.selectedItem,
+                    status: payload.status
+                }
+            }
+            this.$emit('update-status', payload)
         }
     },
     watch: {
@@ -48,7 +57,7 @@ export default {
             }
         }
     },
-    emits: ['go-to-page-one', 'rediger-genstand']
+    emits: ['go-to-page-one', 'update-status']
 }
 </script>
 
@@ -58,6 +67,7 @@ export default {
         <!-- Vis detaljesiden når en genstand er valgt -->
         <GenstandDetail
             v-if="selectedItem"
+            :id="selectedItem.id"
             :title="selectedItem.title"
             :category="selectedItem.category"
             :brand="selectedItem.brand"
@@ -68,9 +78,8 @@ export default {
             :accessories="selectedItem.accessories"
             :totalLoans="selectedItem.totalLoans"
             :activeLoans="selectedItem.activeLoans"
-            :rating="selectedItem.rating"
             @gåTilbage="selectedItem = null"
-            @rediger="$emit('rediger-genstand', selectedItem)"
+            @update-status="updateItemStatus"
         />
 
         <!-- Liste visning - skjules når en genstand er valgt -->

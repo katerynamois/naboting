@@ -146,6 +146,12 @@ export default {
       this.itemToEdit = null;
       this.currentPage = "genstandPage";
     },
+    handleUpdateStatus({ id, status }) {
+      const index = this.items.findIndex(i => i.id === id);
+      if (index !== -1) {
+        this.items[index].status = status;
+      }
+    },
     goToGenstandPage() {
       if (this.pageOneData && this.addDetailsData) {
         const d1 = this.pageOneData;
@@ -158,7 +164,6 @@ export default {
           status: 'Tilgængelig',
           image: d1.images.length ? d1.images[0] : 'https://placehold.co/64x64',
           condition: d2.condition,
-          pickupAddress: d2.pickupAddress,
           quantity: d2.quantity,
           minimumLoanPeriod: d2.minimumLoanPeriod,
           pricePerDay: d2.pricePerDay,
@@ -282,7 +287,7 @@ export default {
         v-if="currentPage === 'genstandPage'"
         :items="items"
         @go-to-page-one="goToPageOne"
-        @rediger-genstand="handleRedigerGenstand"
+        @update-status="handleUpdateStatus"
       />
 
       <RedigerGenstand
