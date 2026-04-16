@@ -10,11 +10,18 @@ export default {
       type: Number,
       default: 0,
     },
+    welcomeRequest: {
+      type: Number,
+      default: 0,
+    },
   },
   emits: ["go-to-page-one", "go-to-items"],
   data() {
     return {
       showLoans: false,
+      showProfileDetails: false,
+      showCreatedWelcome: false,
+      welcomeTimer: null,
       isEditingProfile: false,
       profile: {
         name: "Din profil",
@@ -48,9 +55,39 @@ export default {
     locationText() {
       return [this.profile.postalCode, this.profile.city].filter(Boolean).join(" ");
     },
+    headerEyebrow() {
+      if (this.isEditingProfile) {
+        return "Din profil";
+      }
+
+      return this.showCreatedWelcome ? "Velkommen" : "Din profil";
+    },
+    headerTitle() {
+      if (this.isEditingProfile || !this.showCreatedWelcome) {
+        return this.profile.name;
+      }
+
+      return "Din profil er oprettet";
+    },
+    headerText() {
+      if (this.isEditingProfile || !this.showCreatedWelcome) {
+        return this.profile.bio;
+      }
+
+      return "Velkommen til Naboting. Du er nu klar til at oprette din f\u00f8rste genstand og komme i gang.";
+    },
   },
   methods: {
+    showTemporaryWelcome() {
+      window.clearTimeout(this.welcomeTimer);
+      this.showCreatedWelcome = true;
+      this.welcomeTimer = window.setTimeout(() => {
+        this.showCreatedWelcome = false;
+      }, 4000);
+    },
     startProfileEdit() {
+      window.clearTimeout(this.welcomeTimer);
+      this.showCreatedWelcome = false;
       this.profileDraft = {
         name: this.profile.name,
         postalCode: this.profile.postalCode,
@@ -72,6 +109,7 @@ export default {
       this.isEditingProfile = false;
       this.profileError = "";
       this.profileMessage = "";
+      this.showProfileDetails = false;
     },
     saveProfileEdit() {
       if (this.profileDraft.newPassword || this.profileDraft.repeatNewPassword) {
@@ -100,11 +138,19 @@ export default {
       this.profileError = "";
       this.isEditingProfile = false;
     },
+    toggleProfileDetails() {
+      this.showProfileDetails = !this.showProfileDetails;
+    },
   },
   mounted() {
     if (this.editRequest > 0) {
       this.startProfileEdit();
+    } else if (this.welcomeRequest > 0) {
+      this.showTemporaryWelcome();
     }
+  },
+  beforeUnmount() {
+    window.clearTimeout(this.welcomeTimer);
   },
   watch: {
     editRequest(newValue, oldValue) {
@@ -117,6 +163,11 @@ export default {
         this.showProfileView();
       }
     },
+    welcomeRequest(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.showTemporaryWelcome();
+      }
+    },
   },
 };
 </script>
@@ -127,10 +178,10 @@ export default {
       <section class="profile-header">
         <div class="avatar" aria-hidden="true">{{ profileInitials }}</div>
         <div>
-          <p class="eyebrow">Din profil</p>
-          <h1>{{ profile.name }}</h1>
-          <p v-if="locationText" class="profile-location">{{ locationText }}</p>
-          <p class="profile-text">{{ profile.bio }}</p>
+          <p class="eyebrow">{{ headerEyebrow }}</p>
+          <h1>{{ headerTitle }}</h1>
+          <p v-if="!showCreatedWelcome && locationText" class="profile-location">{{ locationText }}</p>
+          <p class="profile-text">{{ headerText }}</p>
         </div>
       </section>
 
@@ -214,10 +265,11 @@ export default {
           color="primary"
           rounded="lg"
           size="large"
+          elevation="0"
           class="profile-button"
           @click="$emit('go-to-page-one')"
         >
-          Opret genstand
+          Opret din f&oslash;rste genstand
         </v-btn>
 
         <v-btn
@@ -225,10 +277,11 @@ export default {
           color="primary"
           rounded="lg"
           size="large"
+          elevation="0"
           class="profile-button"
           @click="$emit('go-to-items')"
         >
-          Dine genstande
+          Mine genstande
         </v-btn>
 
         <v-btn
@@ -236,15 +289,35 @@ export default {
           color="primary"
           rounded="lg"
           size="large"
+          elevation="0"
           class="profile-button"
           @click="showLoans = true"
         >
-          Dine l&aring;n
+          Mine l&aring;n
+        </v-btn>
+
+        <v-btn
+          variant="text"
+          color="primary"
+          rounded="lg"
+          size="large"
+          elevation="0"
+          class="profile-button profile-link-button"
+          @click="toggleProfileDetails"
+        >
+          Se min profil
         </v-btn>
       </section>
 
-      <section v-if="showLoans" class="loan-section" aria-live="polite">
-        <h2>Dine l&aring;n</h2>
+      <section v-if="!isEditingProfile && showProfileDetails" class="profile-detail-section" aria-live="polite">
+        <h2>Min profil</h2>
+        <p><strong>Navn:</strong> {{ profile.name }}</p>
+        <p v-if="locationText"><strong>Adresse:</strong> {{ locationText }}</p>
+        <p>{{ profile.bio }}</p>
+      </section>
+
+      <section v-if="!isEditingProfile && showLoans" class="loan-section" aria-live="polite">
+        <h2>Mine l&aring;n</h2>
         <p>Du har ingen aktive l&aring;n endnu.</p>
       </section>
     </v-container>
@@ -420,8 +493,15 @@ h1 {
   min-height: 52px;
   text-transform: none;
   font-weight: 700;
+  box-shadow: none !important;
 }
 
+.profile-link-button {
+  min-height: 42px;
+  background: transparent !important;
+}
+
+.profile-detail-section,
 .loan-section {
   margin-top: var(--space-6);
   padding: var(--space-4);
@@ -430,6 +510,7 @@ h1 {
   border-radius: var(--radius-lg);
 }
 
+.profile-detail-section h2,
 .loan-section h2 {
   margin: 0 0 6px;
   font-family: var(--font-display);
@@ -437,11 +518,16 @@ h1 {
   color: var(--color-neutral);
 }
 
+.profile-detail-section p,
 .loan-section p {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--text-body);
   color: var(--color-secondary);
+}
+
+.profile-detail-section p + p {
+  margin-top: var(--space-2);
 }
 
 @media (max-width: 520px) {

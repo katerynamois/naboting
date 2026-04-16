@@ -16,7 +16,7 @@ export default {
     <v-container fluid class="text-center mx-auto">
       <h1 class="justify-content-center">Velkommen til dit lokale fællesskab</h1>
        <v-img
-        src="@/assets/images/community.jpg"
+        src="@/assets/LandingImg.jpg"
         alt="Velkomstbillede"
         class="welcome-image mb-4 mx-auto"
         max-width="500"

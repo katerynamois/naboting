@@ -36,6 +36,7 @@ export default {
       profileCreated: false,
       profileEditRequest: 0,
       profileViewRequest: 0,
+      profileWelcomeRequest: 0,
     };
   },
   methods: {
@@ -50,9 +51,13 @@ export default {
       this.profileCreated = true;
       this.profileEditRequest = 0;
       this.profileViewRequest += 1;
+      this.profileWelcomeRequest += 1;
       this.currentPage = "profile";
       this.showLogin = false;
       this.drawer = false;
+      window.setTimeout(() => {
+        this.profileWelcomeRequest = 0;
+      }, 0);
     },
     goToProfileEdit() {
       this.profileCreated = true;
@@ -84,6 +89,7 @@ export default {
       this.profileCreated = false;
       this.profileEditRequest = 0;
       this.profileViewRequest = 0;
+      this.profileWelcomeRequest = 0;
       this.currentPage = "home";
       this.showLogin = false;
       this.drawer = false;
@@ -218,6 +224,7 @@ export default {
         v-if="currentPage === 'profile'"
         :edit-request="profileEditRequest"
         :view-request="profileViewRequest"
+        :welcome-request="profileWelcomeRequest"
         @go-to-page-one="goToPageOne"
         @go-to-items="goToItems"
       />
