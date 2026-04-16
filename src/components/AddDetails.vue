@@ -85,6 +85,14 @@ export default {
         this.errors.condition = "";
       }
 
+      if (!this.minimumLoanPeriod || this.minimumLoanPeriod < 1) {
+        this.minimumLoanPeriod = 1;
+      }
+
+      if (this.pricePerDay === "" || this.pricePerDay === null || this.pricePerDay < 0) {
+        this.pricePerDay = 0;
+      }
+
       return valid;
     },
    /*  Gem detaljer og gå videre til næste skridt */
@@ -266,7 +274,13 @@ export default {
         <h3>Minimum lejeperiode</h3>
         <p>Hvor mange dage skal lejer mindst leje?</p>
         <div class="number_stepper">
-          <span>{{ minimumLoanPeriod }}</span>
+          <input
+            v-model.number="minimumLoanPeriod"
+            type="number"
+            min="1"
+            class="number_input"
+            aria-label="Minimum lejeperiode"
+          />
           <div class="number_controls">
             <button
               type="button"
@@ -292,7 +306,13 @@ export default {
         <h3>Pris per dag?</h3>
         <p>Prisen er i danske kr.</p>
         <div class="number_stepper">
-          <span>{{ pricePerDay }}</span>
+          <input
+            v-model.number="pricePerDay"
+            type="number"
+            min="0"
+            class="number_input"
+            aria-label="Pris per dag"
+          />
           <div class="number_controls">
             <button
               type="button"
@@ -503,6 +523,17 @@ export default {
 }
 
 .number_stepper span {
+  color: var(--color-neutral);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+}
+
+.number_input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
   color: var(--color-neutral);
   font-family: var(--font-body);
   font-size: var(--text-body);
