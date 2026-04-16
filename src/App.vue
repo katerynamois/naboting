@@ -5,7 +5,6 @@ import PageOne from "@/components/PageOne.vue";
 import ConfirmItemScreen from "./components/ConfirmItemScreen.vue";
 import GenstandPage from "./components/Genstand/GenstandPage.vue";
 import RedigerGenstand from "./components/Genstand/RedigerGenstand.vue";
-import Stepper from "@/components/Stepper.vue";
 import Profile from "@/components/Profile.vue";
 import LoginModal from "@/components/LoginModal.vue";
 import RegisterProfile from "@/components/RegisterProfile.vue";
@@ -18,7 +17,6 @@ export default {
     ConfirmItemScreen,
     GenstandPage,
     RedigerGenstand,
-    Stepper,
     Profile,
     LoginModal,
     RegisterProfile,
@@ -73,9 +71,6 @@ export default {
       this.currentPage = "profile";
       this.showLogin = false;
       this.drawer = false;
-      window.setTimeout(() => {
-        this.profileWelcomeRequest = 0;
-      }, 0);
     },
     goToProfileEdit() {
       this.profileCreated = true;
@@ -173,7 +168,7 @@ export default {
           image: d1.images.length ? d1.images[0] : 'https://placehold.co/64x64',
           condition: d2.condition,
           quantity: d2.quantity,
-          minimumLoanPeriod: d2.minimumLoanPeriod,
+          maxDays: d2.minimumLoanPeriod,
           pricePerDay: d2.pricePerDay,
           accessories: d2.extras && d2.extras.length ? d2.extras.join(', ') : null,
           totalLoans: 0,
@@ -213,7 +208,7 @@ export default {
         <template v-if="profileCreated">
           <v-list-item class="menu-item" @click="goToProfileEdit">Min profil</v-list-item>
           <v-list-item class="menu-item" @click="goToPageOne">Opret genstand</v-list-item>
-          <v-list-item class="menu-item" @click="goToItems">Dine genstande</v-list-item>
+          <v-list-item class="menu-item" @click="goToItems">Mine genstande</v-list-item>
           <v-list-item class="menu-item" @click="logout">Log ud</v-list-item>
         </template>
 
@@ -298,6 +293,7 @@ export default {
         :items="items"
         @go-to-page-one="goToPageOne"
         @update-status="handleUpdateStatus"
+        @rediger-genstand="handleRedigerGenstand"
       />
 
       <RedigerGenstand

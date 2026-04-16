@@ -57,7 +57,7 @@ export default {
             }
         }
     },
-    emits: ['go-to-page-one', 'update-status']
+    emits: ['go-to-page-one', 'update-status', 'rediger-genstand']
 }
 </script>
 
@@ -80,13 +80,14 @@ export default {
             :activeLoans="selectedItem.activeLoans"
             @gåTilbage="selectedItem = null"
             @update-status="updateItemStatus"
+            @rediger-genstand="$emit('rediger-genstand', selectedItem)"
         />
 
         <!-- Liste visning - skjules når en genstand er valgt -->
         <div v-else>
 
             <!-- Sidetitel -->
-            <h1 class="page-title">Dine genstande</h1>
+            <h1 class="page-title">Mine genstande</h1>
 
             <!-- Filter tabs - activeFilter opdateres når brugeren klikker -->
             <GenstandFilter
@@ -137,13 +138,6 @@ export default {
 </template>
 
 <style scoped>
-
-/* Sidebaggrund - varm off-white som fylder hele skærmen */
-.page {
-    background: var(--color-bg);
-    min-height: 100vh;
-    padding: var(--space-6) var(--space-4);
-}
 
 /* Sidetitel */
 .page-title {

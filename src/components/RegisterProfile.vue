@@ -22,6 +22,7 @@ export default {
       openDropdown: null,
       citySearch: "",
       profileImage: null,
+      registerError: "",
     };
   },
   computed: {
@@ -42,13 +43,74 @@ export default {
     },
   },
   methods: {
+    isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+    },
+    isValidDanishPhone(value) {
+      const normalizedPhone = value.replace(/\s/g, "");
+      return /^(\+45)?\d{8}$/.test(normalizedPhone);
+    },
+    isValidDanishPostalSearch(value) {
+      const trimmedValue = value.trim();
+      return /\b\d{4}\b/.test(trimmedValue) && /[A-Za-zÆØÅæøå]/.test(trimmedValue);
+    },
+    isValidCvr(value) {
+      return /^\d{8}$/.test(value.replace(/\s/g, ""));
+    },
     goToAboutStep() {
+      this.registerError = "";
+      if (!this.email || !this.phone || !this.password || !this.repeatPassword) {
+        this.registerError = "Udfyld venligst alle felter.";
+        return;
+      }
+      if (!this.isValidEmail(this.email)) {
+        this.registerError = "Indtast en gyldig email adresse.";
+        return;
+      }
+      if (!this.isValidDanishPhone(this.phone)) {
+        this.registerError = "Indtast et gyldigt dansk telefonnummer på 8 cifre.";
+        return;
+      }
+      if (this.password !== this.repeatPassword) {
+        this.registerError = "Adgangskoderne matcher ikke.";
+        return;
+      }
+      if (this.password.length < 6) {
+        this.registerError = "Adgangskoden skal være mindst 6 tegn.";
+        return;
+      }
+      if (!this.acceptedTerms) {
+        this.registerError = "Du skal acceptere brugsvilkårene for at fortsætte.";
+        return;
+      }
       this.currentRegisterStep = 2;
     },
     goToPostcodeStep() {
-      this.currentRegisterStep = 3;
-    },
-    goToProfileImageStep() {
+      this.registerError = "";
+
+      if (this.userType === "private") {
+        if (!this.firstName.trim() || !this.lastName.trim()) {
+          this.registerError = "Indtast både fornavn og efternavn.";
+          return;
+        }
+      }
+
+      if (this.userType === "business") {
+        if (!this.companyName.trim() || !this.contactPerson.trim() || !this.industry) {
+          this.registerError = "Udfyld firmanavn, kontaktperson og branche.";
+          return;
+        }
+        if (!this.isValidCvr(this.cvr)) {
+          this.registerError = "Indtast et gyldigt CVR-nummer på 8 cifre.";
+          return;
+        }
+      }
+
+      if (!this.isValidDanishPostalSearch(this.citySearch)) {
+        this.registerError = "Indtast postnummer og by, fx 8000 Aarhus.";
+        return;
+      }
+
       this.currentRegisterStep = 3;
     },
     goBack() {
@@ -76,6 +138,12 @@ export default {
       this.profileImage = file || null;
     },
     submitProfileCreated() {
+      if (!this.isValidEmail(this.email) || !this.isValidDanishPhone(this.phone)) {
+        this.registerError = "Tjek email og telefonnummer igen.";
+        this.currentRegisterStep = 1;
+        return;
+      }
+
       this.$emit("profile-created", {
         email: this.email,
         phone: this.phone,
@@ -137,6 +205,7 @@ export default {
             v-model="phone"
             class="phone-input"
             type="tel"
+            inputmode="tel"
             placeholder="Dit telefonnummer"
             autocomplete="tel"
           />
@@ -168,13 +237,15 @@ export default {
           </span>
         </label>
 
+        <p v-if="registerError" class="register-error">{{ registerError }}</p>
+
         <div class="register-actions">
           <button class="back-button" type="button" @click="goBack">
             Tilbage
           </button>
 
           <button class="continue-button" type="submit">
-          Forsæt
+            Fortsæt
           </button>
         </div>
       </form>
@@ -298,6 +369,7 @@ export default {
             class="register-input"
             type="text"
             inputmode="numeric"
+            maxlength="8"
             placeholder="CVR"
             autocomplete="off"
           />
@@ -346,47 +418,18 @@ export default {
           autocomplete="postal-code"
         />
 
+        <p v-if="registerError" class="register-error">{{ registerError }}</p>
+
         <div class="register-actions">
           <button class="back-button" type="button" @click="goBack">
             Tilbage
           </button>
 
           <button class="continue-button" type="submit" :disabled="!citySearch">
-          Forsæt
+            Fortsæt
           </button>
         </div>
       </form>
-
-      <section v-if="false" class="postcode-step">
-        <header class="register-header postcode-header">
-          <p class="step-label">STEP 3 AF 4</p>
-          <h1>Dit postnummer</h1>
-        </header>
-
-        <form class="postcode-form" @submit.prevent="goToProfileImageStep">
-          <input
-            v-model="citySearch"
-            class="postcode-input"
-            type="text"
-            placeholder="Søg efter by/postnr"
-            autocomplete="postal-code"
-          />
-
-          <div class="register-actions postcode-actions">
-            <button class="back-button" type="button" @click="goBack">
-              Tilbage
-            </button>
-
-            <button
-              class="continue-button"
-              type="submit"
-              :disabled="!citySearch"
-            >
-            Forsæt
-            </button>
-          </div>
-        </form>
-      </section>
 
       <section v-if="currentRegisterStep === 3" class="profile-image-step">
         <header class="register-header profile-image-header">
@@ -417,8 +460,8 @@ export default {
             </button>
 
             <button class="continue-button" type="submit">
-            Forsæt
-            </button>
+            Fortsæt
+          </button>
           </div>
         </form>
       </section>
@@ -500,44 +543,6 @@ h1 {
 .register-input {
   padding: 0 var(--space-4);
   outline: none;
-}
-
-.postcode-step {
-  min-height: calc(100vh - 80px);
-  display: flex;
-  flex-direction: column;
-}
-
-.postcode-header {
-  margin-bottom: var(--space-8);
-}
-
-.postcode-form {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.postcode-input {
-  width: 100%;
-  min-height: 42px;
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--color-neutral);
-  font-family: var(--font-body);
-  font-size: var(--text-label);
-  outline: none;
-  padding: 0 var(--space-4);
-}
-
-.postcode-actions {
-  margin: auto auto var(--space-6);
-}
-
-.postcode-actions .continue-button:disabled {
-  background: var(--color-border);
-  cursor: default;
 }
 
 .profile-image-step {
@@ -800,5 +805,14 @@ h1 {
 .continue-button:disabled {
   background: var(--color-border);
   cursor: default;
+}
+
+.register-error {
+  margin: 0;
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 700;
+  text-align: center;
 }
 </style>

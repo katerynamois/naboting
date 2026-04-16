@@ -63,6 +63,19 @@ export default {
     },
   },
   methods: {
+    isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+    },
+    isValidDanishPhone(value) {
+      const normalizedPhone = value.replace(/\s/g, "");
+      return /^(\+45)?\d{8}$/.test(normalizedPhone);
+    },
+    isValidDanishPostalCode(value) {
+      return /^\d{4}$/.test(value.trim());
+    },
+    isValidCity(value) {
+      return /^[A-Za-zÆØÅæøå .'-]{2,}$/.test(value.trim());
+    },
     applyProfileData(data) {
       if (!data) return;
 
@@ -117,26 +130,61 @@ export default {
       this.showProfileDetails = false;
     },
     saveProfileEdit() {
+      if (!this.profileDraft.firstName.trim() || !this.profileDraft.lastName.trim()) {
+        this.profileError = "Indtast både fornavn og efternavn.";
+        return;
+      }
+
+      if (!this.isValidDanishPostalCode(this.profileDraft.postalCode)) {
+        this.profileError = "Indtast et gyldigt postnummer på 4 cifre.";
+        return;
+      }
+
+      if (!this.isValidCity(this.profileDraft.city)) {
+        this.profileError = "Indtast en gyldig by.";
+        return;
+      }
+
+      if (!this.isValidEmail(this.profileDraft.email)) {
+        this.profileError = "Indtast en gyldig email adresse.";
+        return;
+      }
+
+      if (!this.isValidDanishPhone(this.profileDraft.phone)) {
+        this.profileError = "Indtast et gyldigt dansk telefonnummer på 8 cifre.";
+        return;
+      }
+
       if (this.profileDraft.newPassword || this.profileDraft.repeatNewPassword) {
+        if (!this.profileDraft.currentPassword) {
+          this.profileError = "Indtast din nuværende adgangskode for at skifte.";
+          return;
+        }
+
+        if (this.profileDraft.currentPassword !== this.profile.password) {
+          this.profileError = "Den nuværende adgangskode er forkert.";
+          return;
+        }
+
         if (this.profileDraft.newPassword !== this.profileDraft.repeatNewPassword) {
           this.profileError = "De nye adgangskoder matcher ikke.";
           return;
         }
 
         if (this.profileDraft.newPassword.length < 6) {
-          this.profileError = "Den nye adgangskode skal vaere mindst 6 tegn.";
+          this.profileError = "Den nye adgangskode skal være mindst 6 tegn.";
           return;
         }
       }
 
       this.profile = {
         ...this.profile,
-        firstName: this.profileDraft.firstName,
-        lastName: this.profileDraft.lastName,
-        email: this.profileDraft.email,
-        phone: this.profileDraft.phone,
-        postalCode: this.profileDraft.postalCode,
-        city: this.profileDraft.city,
+        firstName: this.profileDraft.firstName.trim(),
+        lastName: this.profileDraft.lastName.trim(),
+        email: this.profileDraft.email.trim(),
+        phone: this.profileDraft.phone.trim(),
+        postalCode: this.profileDraft.postalCode.trim(),
+        city: this.profileDraft.city.trim(),
         password: this.profileDraft.newPassword || this.profile.password,
       };
       this.profileMessage = this.profileDraft.newPassword
@@ -211,6 +259,7 @@ export default {
             class="profile-input"
             type="text"
             inputmode="numeric"
+            maxlength="4"
             placeholder="Postnummer"
           />
 
@@ -234,6 +283,7 @@ export default {
           v-model="profileDraft.phone"
           class="profile-input"
           type="tel"
+          inputmode="tel"
           placeholder="Telefonnummer"
           autocomplete="tel"
         />
@@ -322,7 +372,11 @@ export default {
         >
           Mine l&aring;n
         </v-btn>
-     </section>
+
+        <button class="profile-details-toggle" type="button" @click="toggleProfileDetails">
+          {{ showProfileDetails ? "Skjul profiloplysninger" : "Se profiloplysninger" }}
+        </button>
+      </section>
 
       <section v-if="!isEditingProfile && showProfileDetails" class="profile-detail-section" aria-live="polite">
         <h2>Min profil</h2>
@@ -360,6 +414,7 @@ export default {
 
 .profile-input {
   width: 100%;
+  min-height: 46px;
   border: none;
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -368,10 +423,6 @@ export default {
   font-size: var(--text-body);
   outline: none;
   padding: 0 var(--space-4);
-}
-
-.profile-input {
-  min-height: 46px;
 }
 
 .profile-input-grid {
@@ -462,6 +513,17 @@ export default {
 .profile-link-button {
   min-height: 42px;
   background: transparent !important;
+}
+
+.profile-details-toggle {
+  border: none;
+  background: transparent;
+  color: var(--color-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  cursor: pointer;
+  padding: 0;
+  text-align: center;
 }
 
 .profile-detail-section,
