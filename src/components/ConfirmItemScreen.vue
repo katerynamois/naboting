@@ -31,7 +31,6 @@ export default {
         { label: "Stand", value: d.condition || '—' },
         { label: "Antal", value: d.quantity || 1 },
         { label: "Minimum lejeperiode", value: d.minimumLoanPeriod ? `${d.minimumLoanPeriod} dage` : '1 dag' },
-        { label: "Pris per dag", value: `${d.pricePerDay || 0} kr.` },
         { label: "Tilbehør", value: d.extras && d.extras.length ? d.extras.join(', ') : 'Intet tilbehør tilføjet' },
       ];
     },

@@ -50,9 +50,11 @@ export default {
       const normalizedPhone = value.replace(/\s/g, "");
       return /^(\+45)?\d{8}$/.test(normalizedPhone);
     },
-    isValidDanishPostalSearch(value) {
-      const trimmedValue = value.trim();
-      return /\b\d{4}\b/.test(trimmedValue) && /[A-Za-zÆØÅæøå]/.test(trimmedValue);
+    isValidDanishPostalCode(value) {
+      return /^\d{4}$/.test(value.trim());
+    },
+    normalizePostalCode() {
+      this.citySearch = this.citySearch.replace(/\D/g, "").slice(0, 4);
     },
     isValidCvr(value) {
       return /^\d{8}$/.test(value.replace(/\s/g, ""));
@@ -106,8 +108,8 @@ export default {
         }
       }
 
-      if (!this.isValidDanishPostalSearch(this.citySearch)) {
-        this.registerError = "Indtast postnummer og by, fx 8000 Aarhus.";
+      if (!this.isValidDanishPostalCode(this.citySearch)) {
+        this.registerError = "Indtast et gyldigt postnummer på 4 cifre.";
         return;
       }
 
@@ -414,8 +416,11 @@ export default {
           v-model="citySearch"
           class="register-input"
           type="text"
-          placeholder="Søg efter by/postnr"
+          inputmode="numeric"
+          maxlength="4"
+          placeholder="Postnummer"
           autocomplete="postal-code"
+          @input="normalizePostalCode"
         />
 
         <p v-if="registerError" class="register-error">{{ registerError }}</p>
@@ -425,7 +430,7 @@ export default {
             Tilbage
           </button>
 
-          <button class="continue-button" type="submit" :disabled="!citySearch">
+          <button class="continue-button" type="submit" :disabled="!isValidDanishPostalCode(citySearch)">
             Fortsæt
           </button>
         </div>

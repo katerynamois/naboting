@@ -174,7 +174,6 @@ export default {
           condition: d2.condition,
           quantity: d2.quantity,
           minimumLoanPeriod: d2.minimumLoanPeriod,
-          pricePerDay: d2.pricePerDay,
           accessories: d2.extras || [],
           totalLoans: 0,
           activeLoans: 0,

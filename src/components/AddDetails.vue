@@ -20,7 +20,6 @@ export default {
       condition: null,
       quantity: 1,
       minimumLoanPeriod: 1,
-      pricePerDay: 0,
       errors: {
         hasExtra: "", 
         extrasList: "",
@@ -88,10 +87,6 @@ export default {
         this.minimumLoanPeriod = 1;
       }
 
-      if (this.pricePerDay === "" || this.pricePerDay === null || this.pricePerDay < 0) {
-        this.pricePerDay = 0;
-      }
-
       return valid;
     },
    /*  Gem detaljer og gå videre til næste skridt */
@@ -103,7 +98,6 @@ export default {
           condition: this.condition,
           quantity: this.quantity,
           minimumLoanPeriod: this.minimumLoanPeriod,
-          pricePerDay: this.pricePerDay,
         };
         this.$emit("save-details", details,);
         this.$emit("go-to-confirm-item")
@@ -289,37 +283,6 @@ export default {
         </div>
       </div>
 
-      <div class="number_field_group">
-        <h3>Pris per dag?</h3>
-        <p>Prisen er i danske kr.</p>
-        <div class="number_stepper">
-          <input
-            v-model.number="pricePerDay"
-            type="number"
-            min="0"
-            class="number_input"
-            aria-label="Pris per dag"
-          />
-          <div class="number_controls">
-            <button
-              type="button"
-              class="step_button decrement"
-              aria-label="Reducer pris per dag"
-              @click="decrementField('pricePerDay', 0)"
-            >
-              -
-            </button>
-            <button
-              type="button"
-              class="step_button increment"
-              aria-label="Forøg pris per dag"
-              @click="incrementField('pricePerDay')"
-            >
-              +
-            </button>
-          </div>
-        </div>
-      </div>
     </section>
 
    <!--  Tilbage og næste knapper -->

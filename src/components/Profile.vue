@@ -79,18 +79,14 @@ export default {
     applyProfileData(data) {
       if (!data) return;
 
-      const cityParts = (data.citySearch || "").trim().split(/\s+/);
-      const postalCode = cityParts.find(part => /^\d{4}$/.test(part)) || "";
-      const city = cityParts.filter(part => part !== postalCode).join(" ");
-
       this.profile = {
         ...this.profile,
         firstName: data.userType === "business" ? data.contactPerson || "" : data.firstName || "",
         lastName: data.userType === "business" ? data.companyName || "" : data.lastName || "",
         email: data.email || "",
         phone: data.phone || "",
-        postalCode: data.postalCode || postalCode || data.citySearch || "",
-        city: data.city || city,
+        postalCode: data.postalCode || data.citySearch || "",
+        city: data.city || "",
         password: data.password || this.profile.password,
       };
     },
@@ -140,7 +136,7 @@ export default {
         return;
       }
 
-      if (!this.isValidCity(this.profileDraft.city)) {
+      if (this.profileDraft.city.trim() && !this.isValidCity(this.profileDraft.city)) {
         this.profileError = "Indtast en gyldig by.";
         return;
       }
