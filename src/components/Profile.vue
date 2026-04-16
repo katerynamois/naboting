@@ -239,93 +239,151 @@ export default {
   <div class="profile-page">
     <v-container class="profile-container">
       <section v-if="isEditingProfile" class="edit-profile-section" aria-label="Rediger profil">
-        <input
+        <v-text-field
           v-model="profileDraft.firstName"
-          class="profile-input"
+          class="profile-field"
           type="text"
           placeholder="Fornavn"
+          variant="solo"
+          density="comfortable"
+          rounded="lg"
+          flat
+          hide-details
         />
 
-        <input
+        <v-text-field
           v-model="profileDraft.lastName"
-          class="profile-input"
+          class="profile-field"
           type="text"
           placeholder="Efternavn"
+          variant="solo"
+          density="comfortable"
+          rounded="lg"
+          flat
+          hide-details
         />
 
         <div class="profile-input-grid">
-          <input
+          <v-text-field
             v-model="profileDraft.postalCode"
-            class="profile-input"
+            class="profile-field"
             type="text"
             inputmode="numeric"
             maxlength="4"
             placeholder="Postnummer"
+            variant="solo"
+            density="comfortable"
+            rounded="lg"
+            flat
+            hide-details
           />
 
-          <input
+          <v-text-field
             v-model="profileDraft.city"
-            class="profile-input"
+            class="profile-field"
             type="text"
             placeholder="By"
+            variant="solo"
+            density="comfortable"
+            rounded="lg"
+            flat
+            hide-details
           />
         </div>
 
-        <input
+        <v-text-field
           v-model="profileDraft.email"
-          class="profile-input"
+          class="profile-field"
           type="email"
           placeholder="Email"
           autocomplete="email"
+          variant="solo"
+          density="comfortable"
+          rounded="lg"
+          flat
+          hide-details
         />
 
-        <input
+        <v-text-field
           v-model="profileDraft.phone"
-          class="profile-input"
+          class="profile-field"
           type="tel"
           inputmode="tel"
           placeholder="Telefonnummer"
           autocomplete="tel"
+          variant="solo"
+          density="comfortable"
+          rounded="lg"
+          flat
+          hide-details
         />
 
         <div class="password-edit-group">
           <p class="edit-section-title">Skift adgangskode</p>
 
-          <input
+          <v-text-field
             v-model="profileDraft.currentPassword"
-            class="profile-input"
+            class="profile-field"
             type="password"
             placeholder="Nuv&aelig;rende adgangskode"
             autocomplete="current-password"
+            variant="solo"
+            density="comfortable"
+            rounded="lg"
+            flat
+            hide-details
           />
 
-          <input
+          <v-text-field
             v-model="profileDraft.newPassword"
-            class="profile-input"
+            class="profile-field"
             type="password"
             placeholder="Ny adgangskode"
             autocomplete="new-password"
+            variant="solo"
+            density="comfortable"
+            rounded="lg"
+            flat
+            hide-details
           />
 
-          <input
+          <v-text-field
             v-model="profileDraft.repeatNewPassword"
-            class="profile-input"
+            class="profile-field"
             type="password"
             placeholder="Gentag ny adgangskode"
             autocomplete="new-password"
+            variant="solo"
+            density="comfortable"
+            rounded="lg"
+            flat
+            hide-details
           />
         </div>
 
         <p v-if="profileError" class="profile-error">{{ profileError }}</p>
 
         <div class="edit-profile-actions">
-          <button class="secondary-profile-button" type="button" @click="cancelProfileEdit">
+          <v-btn
+            class="edit-profile-button"
+            variant="flat"
+            color="surface"
+            rounded="md"
+            elevation="0"
+            @click="cancelProfileEdit"
+          >
             Annuller
-          </button>
+          </v-btn>
 
-          <button class="primary-profile-button" type="button" @click="saveProfileEdit">
+          <v-btn
+            class="edit-profile-button"
+            color="primary"
+            rounded="md"
+            elevation="0"
+            @click="saveProfileEdit"
+          >
             Gem
-          </button>
+          </v-btn>
         </div>
       </section>
 
@@ -373,9 +431,6 @@ export default {
           Mine l&aring;n
         </v-btn>
 
-        <button class="profile-details-toggle" type="button" @click="toggleProfileDetails">
-          {{ showProfileDetails ? "Skjul profiloplysninger" : "Se profiloplysninger" }}
-        </button>
       </section>
 
       <section v-if="!isEditingProfile && showProfileDetails" class="profile-detail-section" aria-live="polite">
@@ -412,17 +467,17 @@ export default {
   margin-bottom: var(--space-6);
 }
 
-.profile-input {
-  width: 100%;
-  min-height: 46px;
-  border: none;
-  border-radius: var(--radius-lg);
+.profile-field :deep(.v-field) {
   background: var(--color-surface);
+  box-shadow: none;
   color: var(--color-neutral);
   font-family: var(--font-body);
   font-size: var(--text-body);
-  outline: none;
-  padding: 0 var(--space-4);
+}
+
+.profile-field :deep(input::placeholder) {
+  color: var(--color-secondary);
+  opacity: 0.75;
 }
 
 .profile-input-grid {
@@ -468,26 +523,11 @@ export default {
   gap: var(--space-3);
 }
 
-.primary-profile-button,
-.secondary-profile-button {
+.edit-profile-button {
   flex: 1;
   min-height: 42px;
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-body);
-  font-size: var(--text-label);
+  text-transform: none;
   font-weight: 800;
-  cursor: pointer;
-}
-
-.primary-profile-button {
-  background: var(--color-primary);
-  color: var(--color-surface);
-}
-
-.secondary-profile-button {
-  background: var(--color-surface);
-  color: var(--color-neutral);
 }
 
 .profile-actions {
