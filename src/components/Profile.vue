@@ -6,6 +6,10 @@ export default {
       type: Number,
       default: 0,
     },
+    viewRequest: {
+      type: Number,
+      default: 0,
+    },
   },
   emits: ["go-to-page-one", "go-to-items"],
   data() {
@@ -64,6 +68,11 @@ export default {
       this.isEditingProfile = false;
       this.profileError = "";
     },
+    showProfileView() {
+      this.isEditingProfile = false;
+      this.profileError = "";
+      this.profileMessage = "";
+    },
     saveProfileEdit() {
       if (this.profileDraft.newPassword || this.profileDraft.repeatNewPassword) {
         if (this.profileDraft.newPassword !== this.profileDraft.repeatNewPassword) {
@@ -101,6 +110,11 @@ export default {
     editRequest(newValue, oldValue) {
       if (newValue !== oldValue) {
         this.startProfileEdit();
+      }
+    },
+    viewRequest(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.showProfileView();
       }
     },
   },

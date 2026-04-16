@@ -35,6 +35,7 @@ export default {
       showLogin: false,
       profileCreated: false,
       profileEditRequest: 0,
+      profileViewRequest: 0,
     };
   },
   methods: {
@@ -48,6 +49,7 @@ export default {
     goToProfile() {
       this.profileCreated = true;
       this.profileEditRequest = 0;
+      this.profileViewRequest += 1;
       this.currentPage = "profile";
       this.showLogin = false;
       this.drawer = false;
@@ -74,12 +76,14 @@ export default {
     handleLogin() {
       this.profileCreated = true;
       this.profileEditRequest = 0;
+      this.profileViewRequest += 1;
       this.showLogin = false;
       this.currentPage = "profile";
     },
     logout() {
       this.profileCreated = false;
       this.profileEditRequest = 0;
+      this.profileViewRequest = 0;
       this.currentPage = "home";
       this.showLogin = false;
       this.drawer = false;
@@ -213,6 +217,7 @@ export default {
       <Profile
         v-if="currentPage === 'profile'"
         :edit-request="profileEditRequest"
+        :view-request="profileViewRequest"
         @go-to-page-one="goToPageOne"
         @go-to-items="goToItems"
       />
