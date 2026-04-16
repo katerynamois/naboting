@@ -1,4 +1,6 @@
 <script>
+import toolsImage from "@/assets/tools.png";
+
 export default {
   name: "Profile",
   props: {
@@ -18,6 +20,7 @@ export default {
   emits: ["go-to-page-one", "go-to-items"],
   data() {
     return {
+      toolsImage,
       showLoans: false,
       showProfileDetails: false,
       showCreatedWelcome: false,
@@ -44,37 +47,8 @@ export default {
     };
   },
   computed: {
-    profileInitials() {
-      return this.profile.name
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part.charAt(0).toUpperCase())
-        .join("") || "DP";
-    },
     locationText() {
       return [this.profile.postalCode, this.profile.city].filter(Boolean).join(" ");
-    },
-    headerEyebrow() {
-      if (this.isEditingProfile) {
-        return "Din profil";
-      }
-
-      return this.showCreatedWelcome ? "Velkommen" : "Din profil";
-    },
-    headerTitle() {
-      if (this.isEditingProfile || !this.showCreatedWelcome) {
-        return this.profile.name;
-      }
-
-      return "Din profil er oprettet";
-    },
-    headerText() {
-      if (this.isEditingProfile || !this.showCreatedWelcome) {
-        return this.profile.bio;
-      }
-
-      return "Velkommen til Naboting. Du er nu klar til at oprette din f\u00f8rste genstand og komme i gang.";
     },
   },
   methods: {
@@ -175,16 +149,6 @@ export default {
 <template>
   <div class="profile-page">
     <v-container class="profile-container">
-      <section class="profile-header">
-        <div class="avatar" aria-hidden="true">{{ profileInitials }}</div>
-        <div>
-          <p class="eyebrow">{{ headerEyebrow }}</p>
-          <h1>{{ headerTitle }}</h1>
-          <p v-if="!showCreatedWelcome && locationText" class="profile-location">{{ locationText }}</p>
-          <p class="profile-text">{{ headerText }}</p>
-        </div>
-      </section>
-
       <section v-if="isEditingProfile" class="edit-profile-section" aria-label="Rediger profil">
         <input
           v-model="profileDraft.name"
@@ -261,6 +225,12 @@ export default {
       <p v-if="profileMessage" class="profile-message">{{ profileMessage }}</p>
 
       <section v-if="!isEditingProfile" class="profile-actions" aria-label="Profil handlinger">
+        <img
+          :src="toolsImage"
+          alt="V&aelig;rkt&oslash;j til at oprette genstande"
+          class="profile-tools-image"
+        />
+
         <v-btn
           color="primary"
           rounded="lg"
@@ -269,7 +239,7 @@ export default {
           class="profile-button"
           @click="$emit('go-to-page-one')"
         >
-          Opret din f&oslash;rste genstand
+          Opret genstand
         </v-btn>
 
         <v-btn
@@ -295,19 +265,7 @@ export default {
         >
           Mine l&aring;n
         </v-btn>
-
-        <v-btn
-          variant="text"
-          color="primary"
-          rounded="lg"
-          size="large"
-          elevation="0"
-          class="profile-button profile-link-button"
-          @click="toggleProfileDetails"
-        >
-          Se min profil
-        </v-btn>
-      </section>
+     </section>
 
       <section v-if="!isEditingProfile && showProfileDetails" class="profile-detail-section" aria-live="polite">
         <h2>Min profil</h2>
@@ -333,59 +291,6 @@ export default {
 
 .profile-container {
   max-width: 620px;
-}
-
-.profile-header {
-  display: flex;
-  gap: var(--space-4);
-  align-items: center;
-  margin-bottom: var(--space-8);
-}
-
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.eyebrow {
-  margin: 0 0 4px;
-  color: var(--color-secondary);
-  font-family: var(--font-body);
-  font-size: var(--text-meta);
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-h1 {
-  margin: 0 0 6px;
-  color: var(--color-neutral);
-  font-family: var(--font-display);
-  font-size: var(--text-h1);
-}
-
-.profile-location {
-  margin: 0 0 6px;
-  color: var(--color-accent);
-  font-family: var(--font-body);
-  font-size: var(--text-label);
-  font-weight: 700;
-}
-
-.profile-text {
-  margin: 0;
-  color: var(--color-secondary);
-  font-family: var(--font-body);
-  font-size: var(--text-body);
 }
 
 .edit-profile-section {
@@ -487,6 +392,13 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.profile-tools-image {
+  display: block;
+  width: min(320px, 90%);
+  height: auto;
+  margin: 0 auto var(--space-3);
 }
 
 .profile-button {

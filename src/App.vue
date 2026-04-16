@@ -39,6 +39,19 @@ export default {
       profileWelcomeRequest: 0,
     };
   },
+  computed: {
+    showNabotingBar() {
+      return [
+        "home",
+        "profile",
+        "pageOne",
+        "addDetails",
+        "confirmItem",
+        "genstandPage",
+        "redigerGenstand",
+      ].includes(this.currentPage);
+    },
+  },
   methods: {
     goHome() {
       this.currentPage = this.profileCreated ? "profile" : "home";
@@ -159,7 +172,7 @@ export default {
 
     <!-- Topbar — vises kun på sider uden egen toolbar -->
     <v-app-bar
-      v-if="currentPage === 'home' || currentPage === 'profile' || currentPage === 'genstandPage'"
+      v-if="showNabotingBar"
       flat
       class="naboting-bar"
     >
