@@ -67,7 +67,7 @@ export default {
       Array.from(event.dataTransfer.files).forEach((file) => this.readImageFile(file));
     },
     cancel() {
-      this.$emit("go-to-items");
+      this.$emit("go-back");
     },
 
      validate() {

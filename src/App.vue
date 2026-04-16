@@ -29,6 +29,7 @@ export default {
       currentStep: 1,
       pageOneData: null,
       addDetailsData: null,
+      createFlowReturnPage: "profile",
       items: [],
       itemToEdit: null,
       drawer: false,
@@ -108,11 +109,18 @@ export default {
       this.drawer = false;
     },
     goToPageOne() {
+      if (this.currentPage !== "addDetails") {
+        this.createFlowReturnPage = this.currentPage;
+      }
       this.drawer = false;
       this.currentPage = "pageOne";
       this.currentStep = 1;
       this.pageOneData = null;
       this.addDetailsData = null;
+    },
+    goBackFromPageOne() {
+      this.currentPage = this.createFlowReturnPage || (this.profileCreated ? "profile" : "home");
+      this.drawer = false;
     },
     goToAddDetails(data) {
       this.pageOneData = data;
@@ -249,7 +257,7 @@ export default {
         v-if="currentPage === 'pageOne'"
         :currentStep="currentStep"
         @go-to-add-details="goToAddDetails"
-        @go-to-items="goToItems"
+        @go-back="goBackFromPageOne"
       />
 
       <AddDetails
