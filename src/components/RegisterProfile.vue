@@ -75,6 +75,24 @@ export default {
       const file = event.target.files && event.target.files[0];
       this.profileImage = file || null;
     },
+    submitProfileCreated() {
+      this.$emit("profile-created", {
+        email: this.email,
+        phone: this.phone,
+        password: this.password,
+        userType: this.userType,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        gender: this.gender,
+        birthYear: this.birthYear,
+        companyName: this.companyName,
+        cvr: this.cvr,
+        contactPerson: this.contactPerson,
+        industry: this.industry,
+        citySearch: this.citySearch,
+        profileImage: this.profileImage,
+      });
+    },
   },
 };
 </script>
@@ -376,7 +394,7 @@ export default {
           <h1>Tilføj profilbillede</h1>
         </header>
 
-        <form class="profile-image-form" @submit.prevent="$emit('profile-created')">
+        <form class="profile-image-form" @submit.prevent="submitProfileCreated">
           <div class="avatar-picker">
             <div class="profile-avatar" aria-hidden="true">
               {{ profileInitial }}

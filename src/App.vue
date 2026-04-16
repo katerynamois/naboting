@@ -38,6 +38,7 @@ export default {
       profileEditRequest: 0,
       profileViewRequest: 0,
       profileWelcomeRequest: 0,
+      profileData: null,
     };
   },
   computed: {
@@ -61,8 +62,11 @@ export default {
       this.currentPage = "genstandPage";
       this.drawer = false;
     },
-    goToProfile() {
+    goToProfile(profileData = null) {
       this.profileCreated = true;
+      if (profileData) {
+        this.profileData = profileData;
+      }
       this.profileEditRequest = 0;
       this.profileViewRequest += 1;
       this.profileWelcomeRequest += 1;
@@ -104,6 +108,7 @@ export default {
       this.profileEditRequest = 0;
       this.profileViewRequest = 0;
       this.profileWelcomeRequest = 0;
+      this.profileData = null;
       this.currentPage = "home";
       this.showLogin = false;
       this.drawer = false;
@@ -151,6 +156,9 @@ export default {
       if (index !== -1) {
         this.items[index].status = status;
       }
+    },
+    handleUpdateProfile(profileData) {
+      this.profileData = profileData;
     },
     goToGenstandPage() {
       if (this.pageOneData && this.addDetailsData) {
@@ -251,9 +259,11 @@ export default {
 
       <Profile
         v-if="currentPage === 'profile'"
+        :profile-data="profileData"
         :edit-request="profileEditRequest"
         :view-request="profileViewRequest"
         :welcome-request="profileWelcomeRequest"
+        @update-profile="handleUpdateProfile"
         @go-to-page-one="goToPageOne"
         @go-to-items="goToItems"
       />

@@ -16,8 +16,12 @@ export default {
       type: Number,
       default: 0,
     },
+    profileData: {
+      type: Object,
+      default: null,
+    },
   },
-  emits: ["go-to-page-one", "go-to-items"],
+  emits: ["go-to-page-one", "go-to-items", "update-profile"],
   data() {
     return {
       toolsImage,
@@ -27,17 +31,21 @@ export default {
       welcomeTimer: null,
       isEditingProfile: false,
       profile: {
-        name: "Din profil",
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
         postalCode: "",
         city: "",
-        bio: "Her kan du oprette genstande, se dine ting og f\u00f8lge dine l\u00e5n.",
         password: "",
       },
       profileDraft: {
-        name: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
         postalCode: "",
         city: "",
-        bio: "",
         currentPassword: "",
         newPassword: "",
         repeatNewPassword: "",
@@ -50,8 +58,29 @@ export default {
     locationText() {
       return [this.profile.postalCode, this.profile.city].filter(Boolean).join(" ");
     },
+    profileName() {
+      return [this.profile.firstName, this.profile.lastName].filter(Boolean).join(" ") || "Din profil";
+    },
   },
   methods: {
+    applyProfileData(data) {
+      if (!data) return;
+
+      const cityParts = (data.citySearch || "").trim().split(/\s+/);
+      const postalCode = cityParts.find(part => /^\d{4}$/.test(part)) || "";
+      const city = cityParts.filter(part => part !== postalCode).join(" ");
+
+      this.profile = {
+        ...this.profile,
+        firstName: data.userType === "business" ? data.contactPerson || "" : data.firstName || "",
+        lastName: data.userType === "business" ? data.companyName || "" : data.lastName || "",
+        email: data.email || "",
+        phone: data.phone || "",
+        postalCode: data.postalCode || postalCode || data.citySearch || "",
+        city: data.city || city,
+        password: data.password || this.profile.password,
+      };
+    },
     showTemporaryWelcome() {
       window.clearTimeout(this.welcomeTimer);
       this.showCreatedWelcome = true;
@@ -63,10 +92,12 @@ export default {
       window.clearTimeout(this.welcomeTimer);
       this.showCreatedWelcome = false;
       this.profileDraft = {
-        name: this.profile.name,
+        firstName: this.profile.firstName,
+        lastName: this.profile.lastName,
+        email: this.profile.email,
+        phone: this.profile.phone,
         postalCode: this.profile.postalCode,
         city: this.profile.city,
-        bio: this.profile.bio,
         currentPassword: "",
         newPassword: "",
         repeatNewPassword: "",
@@ -100,10 +131,12 @@ export default {
 
       this.profile = {
         ...this.profile,
-        name: this.profileDraft.name,
+        firstName: this.profileDraft.firstName,
+        lastName: this.profileDraft.lastName,
+        email: this.profileDraft.email,
+        phone: this.profileDraft.phone,
         postalCode: this.profileDraft.postalCode,
         city: this.profileDraft.city,
-        bio: this.profileDraft.bio,
         password: this.profileDraft.newPassword || this.profile.password,
       };
       this.profileMessage = this.profileDraft.newPassword
@@ -111,12 +144,14 @@ export default {
         : "Profilen er gemt.";
       this.profileError = "";
       this.isEditingProfile = false;
+      this.$emit("update-profile", { ...this.profile });
     },
     toggleProfileDetails() {
       this.showProfileDetails = !this.showProfileDetails;
     },
   },
   mounted() {
+    this.applyProfileData(this.profileData);
     if (this.editRequest > 0) {
       this.startProfileEdit();
     } else if (this.welcomeRequest > 0) {
@@ -142,6 +177,12 @@ export default {
         this.showTemporaryWelcome();
       }
     },
+    profileData: {
+      handler(newValue) {
+        this.applyProfileData(newValue);
+      },
+      deep: true,
+    },
   },
 };
 </script>
@@ -151,10 +192,17 @@ export default {
     <v-container class="profile-container">
       <section v-if="isEditingProfile" class="edit-profile-section" aria-label="Rediger profil">
         <input
-          v-model="profileDraft.name"
+          v-model="profileDraft.firstName"
           class="profile-input"
           type="text"
-          placeholder="Navn"
+          placeholder="Fornavn"
+        />
+
+        <input
+          v-model="profileDraft.lastName"
+          class="profile-input"
+          type="text"
+          placeholder="Efternavn"
         />
 
         <div class="profile-input-grid">
@@ -174,12 +222,21 @@ export default {
           />
         </div>
 
-        <textarea
-          v-model="profileDraft.bio"
-          class="profile-textarea"
-          rows="4"
-          placeholder="Kort om dig"
-        ></textarea>
+        <input
+          v-model="profileDraft.email"
+          class="profile-input"
+          type="email"
+          placeholder="Email"
+          autocomplete="email"
+        />
+
+        <input
+          v-model="profileDraft.phone"
+          class="profile-input"
+          type="tel"
+          placeholder="Telefonnummer"
+          autocomplete="tel"
+        />
 
         <div class="password-edit-group">
           <p class="edit-section-title">Skift adgangskode</p>
@@ -269,9 +326,10 @@ export default {
 
       <section v-if="!isEditingProfile && showProfileDetails" class="profile-detail-section" aria-live="polite">
         <h2>Min profil</h2>
-        <p><strong>Navn:</strong> {{ profile.name }}</p>
+        <p><strong>Navn:</strong> {{ profileName }}</p>
+        <p v-if="profile.email"><strong>Email:</strong> {{ profile.email }}</p>
+        <p v-if="profile.phone"><strong>Telefon:</strong> {{ profile.phone }}</p>
         <p v-if="locationText"><strong>Adresse:</strong> {{ locationText }}</p>
-        <p>{{ profile.bio }}</p>
       </section>
 
       <section v-if="!isEditingProfile && showLoans" class="loan-section" aria-live="polite">
@@ -300,8 +358,7 @@ export default {
   margin-bottom: var(--space-6);
 }
 
-.profile-input,
-.profile-textarea {
+.profile-input {
   width: 100%;
   border: none;
   border-radius: var(--radius-lg);
@@ -315,12 +372,6 @@ export default {
 
 .profile-input {
   min-height: 46px;
-}
-
-.profile-textarea {
-  min-height: 112px;
-  padding-top: var(--space-3);
-  resize: vertical;
 }
 
 .profile-input-grid {
