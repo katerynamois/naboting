@@ -19,8 +19,7 @@ export default {
             return this.isActive ? 'Tilgængelig' : 'Inaktiv'
         },
         accessoriesList() {
-            if (!this.item.accessories) return []
-            return this.item.accessories.split(',').map(a => a.trim())
+            return this.item.accessories || []
         }
     },
     methods: {
@@ -47,7 +46,7 @@ export default {
         <!-- Billede -->
         <figure class="billede-wrapper">
             <img
-                :src="item.image"
+                :src="item.images && item.images[0]"
                 :alt="`Billede af ${item.title}`"
                 class="billede"
             />
@@ -65,9 +64,9 @@ export default {
 
         <!-- Detaljer -->
         <section class="detaljer-sektion">
-            <div class="detalje-rad" v-if="item.maxDays">
-                <span class="detalje-label">Max låneperiode</span>
-                <span class="detalje-vaerdi">{{ item.maxDays }}</span>
+            <div class="detalje-rad" v-if="item.minimumLoanPeriod">
+                <span class="detalje-label">Min. låneperiode</span>
+                <span class="detalje-vaerdi">{{ item.minimumLoanPeriod }} dage</span>
             </div>
             <div class="detalje-rad" v-if="item.accessories">
                 <span class="detalje-label">Tilbehør</span>

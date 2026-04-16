@@ -38,15 +38,15 @@ export default {
             type: String,
             default: null
         },
-        // Maksimal låneperiode for genstanden
-        maxDays: {
+        // Minimum låneperiode for genstanden
+        minimumLoanPeriod: {
             type: [Number, String],
             default: null
         },
         // Tilbehør til genstanden - kun vist hvis der er noget
         accessories: {
-            type: String,
-            default: null
+            type: Array,
+            default: () => [],
         },
         // Statistik - kun synlig for ejeren
         totalLoans: {
@@ -65,18 +65,14 @@ export default {
             if (this.status === 'Udlånt') return 'status-udlaant'
             if (this.status === 'Inaktiv') return 'status-inaktiv'
         },
-        // Opdeler tilbehør string til en liste
-        // fx "Extra batteri, bits sæt" bliver til ["Extra batteri", "bits sæt"]
         accessoriesList() {
-            if (!this.accessories) return []
-            return this.accessories.split(',').map(item => item.trim())
+            return this.accessories || []
         },
-        maxLoanPeriodText() {
-            if (this.maxDays === null || this.maxDays === undefined || this.maxDays === '') {
+        minLoanPeriodText() {
+            if (this.minimumLoanPeriod === null || this.minimumLoanPeriod === undefined || this.minimumLoanPeriod === '') {
                 return 'Ikke angivet'
             }
-
-            return typeof this.maxDays === 'number' ? `${this.maxDays} dage` : this.maxDays
+            return typeof this.minimumLoanPeriod === 'number' ? `${this.minimumLoanPeriod} dage` : this.minimumLoanPeriod
         }
     },
     methods: {
@@ -136,16 +132,16 @@ export default {
         <!-- To informationsbokse - max låneperiode og tilbehør -->
         <section class="detalje-bokse" aria-label="Genstandsdetaljer">
 
-            <!-- Max låneperiode boks -->
+            <!-- Min. låneperiode boks -->
             <div class="detalje-boks">
-                <span class="detalje-boks-label-top">Maks. lån</span>
+                <span class="detalje-boks-label-top">Min. lån</span>
                 <span class="detalje-boks-tal detalje-boks-tal--periode">
-                    {{ maxLoanPeriodText }}
+                    {{ minLoanPeriodText }}
                 </span>
             </div>
 
             <!-- Tilbehør boks - vises kun hvis der er tilbehør -->
-            <div v-if="accessories" class="detalje-boks detalje-boks-tilbehoer">
+            <div v-if="accessories && accessories.length" class="detalje-boks detalje-boks-tilbehoer">
                 <!-- Ikon og overskrift side om side øverst i boksen -->
                 <div class="detalje-boks-top">
                     <h3 class="detalje-boks-overskrift">Tilbehør</h3>

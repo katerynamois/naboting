@@ -72,9 +72,9 @@ export default {
             :category="selectedItem.category"
             :brand="selectedItem.brand"
             :status="selectedItem.status"
-            :image="selectedItem.image"
+            :image="selectedItem.images[0]"
             :condition="selectedItem.condition"
-            :maxDays="selectedItem.maxDays"
+            :minimumLoanPeriod="selectedItem.minimumLoanPeriod"
             :accessories="selectedItem.accessories"
             :totalLoans="selectedItem.totalLoans"
             :activeLoans="selectedItem.activeLoans"
@@ -106,7 +106,7 @@ export default {
                     :category="item.category"
                     :brand="item.brand"
                     :status="item.status"
-                    :image="item.image"
+                    :image="item.images[0]"
                     @cardClicked="visDetaljer"
                 />
             </div>

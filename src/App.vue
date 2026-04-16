@@ -37,6 +37,7 @@ export default {
       profileViewRequest: 0,
       profileWelcomeRequest: 0,
       profileData: null,
+      currentUserId: null,
     };
   },
   computed: {
@@ -63,7 +64,10 @@ export default {
     goToProfile(profileData = null) {
       this.profileCreated = true;
       if (profileData) {
-        this.profileData = profileData;
+        if (!this.currentUserId) {
+          this.currentUserId = Date.now();
+        }
+        this.profileData = { ...profileData, userId: this.currentUserId };
       }
       this.profileEditRequest = 0;
       this.profileViewRequest += 1;
@@ -161,19 +165,20 @@ export default {
         const d2 = this.addDetailsData;
         const newItem = {
           id: Date.now(),
+          userId: this.currentUserId,
           title: d1.name,
           category: d1.category,
           brand: d1.brand || null,
           status: 'Tilgængelig',
-          image: d1.images.length ? d1.images[0] : 'https://placehold.co/64x64',
+          images: d1.images.length ? d1.images : ['https://placehold.co/64x64'],
           condition: d2.condition,
           quantity: d2.quantity,
-          maxDays: d2.minimumLoanPeriod,
+          minimumLoanPeriod: d2.minimumLoanPeriod,
           pricePerDay: d2.pricePerDay,
-          accessories: d2.extras && d2.extras.length ? d2.extras.join(', ') : null,
+          accessories: d2.extras || [],
           totalLoans: 0,
           activeLoans: 0,
-          rating: null,
+          createdAt: new Date().toISOString(),
         };
         this.items.push(newItem);
         this.pageOneData = null;
