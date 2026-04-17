@@ -1,18 +1,18 @@
-const mysql = require("mysql2");
+import dotenv from "dotenv";
+import mysql from "mysql2/promise";
+import { fileURLToPath } from "node:url";
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "VrangFleR39",
-  database: "naboting"
+dotenv.config({ path: fileURLToPath(new URL(".env", import.meta.url)) });
+
+export const pool = mysql.createPool({
+  host: process.env.DB_HOST || "localhost",
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "naboting",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error("Error connecting to database:", err);
-    return;
-  }
-  console.log("Connected to MySQL database");
-});
-
-module.exports = connection;
+export default pool;
