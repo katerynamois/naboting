@@ -375,17 +375,6 @@ export default {
       <p v-if="profileMessage" class="profile-message">{{ profileMessage }}</p>
 
       <section v-if="!isEditingProfile" class="profile-actions" aria-label="Profil handlinger">
-        <div class="profile-view-header">
-          <div class="profile-view-avatar" aria-hidden="true">
-            {{ profileName.charAt(0).toUpperCase() }}
-          </div>
-          <div class="profile-view-info">
-            <p class="profile-view-name">{{ profileName }}</p>
-            <p v-if="locationText" class="profile-view-location">{{ locationText }}</p>
-            <p v-if="profile.email" class="profile-view-email">{{ profile.email }}</p>
-          </div>
-        </div>
-
         <img
           :src="toolsImage"
           alt="V&aelig;rkt&oslash;j til at oprette genstande"
@@ -516,51 +505,6 @@ export default {
   min-height: 42px;
   text-transform: none;
   font-weight: 800;
-}
-
-.profile-view-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.profile-view-avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: #ffffff;
-  font-family: var(--font-body);
-  font-size: 22px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.profile-view-info {
-  min-width: 0;
-}
-
-.profile-view-name {
-  margin: 0 0 2px;
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: 700;
-  color: var(--color-neutral);
-}
-
-.profile-view-location,
-.profile-view-email {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--text-label);
-  color: var(--color-secondary);
 }
 
 .profile-actions {
