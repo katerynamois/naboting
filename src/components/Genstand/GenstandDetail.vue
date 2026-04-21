@@ -69,6 +69,10 @@ export default {
             type: String,
             default: null
         },
+        user: {
+            type: Object,
+            default: null
+        }
     },
     computed: {
         // Returnerer den korrekte CSS-klasse baseret på status
@@ -187,9 +191,9 @@ export default {
         <!-- Ejer sektion - viser hvem der ejer genstanden -->
         <section class="detalje-ejer" aria-label="Ejeroplysninger">
             <!-- Avatar cirkel med initialer - erstattes med rigtigt billede når login tilføjes -->
-            <div class="detalje-ejer-avatar" aria-hidden="true">DG</div>
+             <div class="detalje-ejer-avatar">{{ user ? user.initials : 'DG' }}</div>
             <div class="detalje-ejer-info">
-                <p class="detalje-ejer-navn">Din genstand</p>
+                <p class="detalje-ejer-navn">{{ user ? user.name : 'Din genstand' }}</p>
                 <p class="detalje-ejer-dato">{{ createdAtText }}</p>
             </div>
             <div class="detalje-status-actions">
