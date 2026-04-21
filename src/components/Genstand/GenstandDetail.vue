@@ -81,11 +81,16 @@ export default {
                 id: this.id,
                 status: newStatus
             })
+        },
+        deleteItem() {
+            if (window.confirm('Vil du slette denne genstand?')) {
+                this.$emit('delete-item', this.id)
+            }
         }
     },
     watch: {
     },
-    emits: ['gåTilbage', 'update-status']
+    emits: ['gåTilbage', 'update-status', 'delete-item']
 }
 </script>
 
@@ -180,6 +185,13 @@ export default {
                     {{ option }}
                 </button>
             </div>
+            <button
+                class="delete-item-button"
+                type="button"
+                @click="deleteItem"
+            >
+                Slet genstand
+            </button>
         </section>
 
         <!-- Statistik sektion - kun synlig for ejeren -->
@@ -506,6 +518,19 @@ export default {
 .status-option--inaktiv.status-option--active {
     background: var(--color-inaktiv-bg);
     color: var(--color-inaktiv-text);
+}
+
+.delete-item-button {
+    flex: 0 0 100%;
+    min-height: 42px;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    color: var(--color-accent);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    font-weight: 700;
 }
 
 /* Statistik sektion - tre bokse side om side */

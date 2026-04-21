@@ -8,6 +8,59 @@ import Profile from "@/components/Profile.vue";
 import LoginModal from "@/components/LoginModal.vue";
 import RegisterProfile from "@/components/RegisterProfile.vue";
 
+const API_BASE_URL = "http://localhost:3001/api";
+
+const STATUS_LABELS = {
+  available: "Tilg\u00e6ngelig",
+  loaned: "Udl\u00e5nt",
+  inactive: "Inaktiv",
+};
+
+function toUiStatus(status) {
+  return STATUS_LABELS[status] || status;
+}
+
+function toApiStatus(status) {
+  if (status === STATUS_LABELS.available || status === "available") return "available";
+  if (status === STATUS_LABELS.loaned || status === "loaned") return "loaned";
+  if (status === STATUS_LABELS.inactive || status === "inactive") return "inactive";
+  return status;
+}
+
+function mapApiItem(item) {
+  return {
+    id: item.item_id,
+    userId: item.owner_id,
+    title: item.title,
+    category: item.category,
+    brand: item.brand,
+    status: toUiStatus(item.status),
+    images: [item.image_url || "https://placehold.co/64x64"],
+    condition: item.item_condition,
+    quantity: item.quantity,
+    minimumLoanPeriod: item.minimum_loan_period,
+    accessories: item.accessories || [],
+    totalLoans: 0,
+    activeLoans: 0,
+    createdAt: item.created_at,
+  };
+}
+
+function toApiItem(item) {
+  return {
+    owner_id: item.userId,
+    title: item.title,
+    brand: item.brand || null,
+    category: item.category || null,
+    item_condition: item.condition || null,
+    quantity: item.quantity || 1,
+    minimum_loan_period: item.minimumLoanPeriod || null,
+    status: toApiStatus(item.status),
+    images: item.images || [],
+    accessories: item.accessories || [],
+  };
+}
+
 export default {
   components: {
     Home,
@@ -142,65 +195,110 @@ export default {
       this.currentPage = "confirmItem";
       this.currentStep = 3;
     },
-    handleUpdateStatus({ id, status }) {
+    getOwnerId() {
+      const existingOwner = this.items.find((item) => item.userId)?.userId;
+      return existingOwner || this.currentUserId || 1;
+    },
+    async handleUpdateStatus({ id, status }) {
       const index = this.items.findIndex(i => i.id === id);
       if (index !== -1) {
+        const previousStatus = this.items[index].status;
         this.items[index].status = status;
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(toApiItem(this.items[index])),
+          });
+
+          if (!response.ok) {
+            throw new Error("Could not update item status");
+          }
+
+          await this.loadItems();
+        } catch (error) {
+          this.items[index].status = previousStatus;
+          console.error(error);
+        }
+      }
+    },
+    async handleDeleteItem(id) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("Could not delete item");
+        }
+
+        this.items = this.items.filter((item) => item.id !== id);
+        await this.loadItems();
+      } catch (error) {
+        console.error(error);
       }
     },
     handleUpdateProfile(profileData) {
       this.profileData = profileData;
     },
-    goToGenstandPage() {
+    async goToGenstandPage() {
       if (this.pageOneData && this.addDetailsData) {
         const d1 = this.pageOneData;
         const d2 = this.addDetailsData;
         const newItem = {
-          id: Date.now(),
-          userId: this.currentUserId,
+          userId: this.getOwnerId(),
           title: d1.name,
           category: d1.category,
           brand: d1.brand || null,
-          status: 'Tilgængelig',
+          status: STATUS_LABELS.available,
           images: d1.images.length ? d1.images : ['https://placehold.co/64x64'],
           condition: d2.condition,
           quantity: d2.quantity,
           minimumLoanPeriod: d2.minimumLoanPeriod,
           accessories: d2.extras || [],
-          totalLoans: 0,
-          activeLoans: 0,
-          createdAt: new Date().toISOString(),
         };
-        this.items.push(newItem);
-        this.pageOneData = null;
-        this.addDetailsData = null;
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/items`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(toApiItem(newItem)),
+          });
+
+          if (!response.ok) {
+            throw new Error("Could not create item");
+          }
+
+          this.pageOneData = null;
+          this.addDetailsData = null;
+          await this.loadItems();
+        } catch (error) {
+          console.error(error);
+          return;
+        }
       }
       this.currentPage = "genstandPage";
       this.drawer = false;
     },
    async loadItems() {
-  const response = await fetch("http://localhost:3001/api/items");
-  const items = await response.json();
+      try {
+        const response = await fetch(`${API_BASE_URL}/items`);
 
-  this.items = items.map((item) => ({
-    id: item.item_id,
-    userId: item.owner_id,
-    title: item.title,
-    category: item.category,
-    brand: item.brand,
-    status: item.status === "available" ? "Tilgængelig" : item.status,
-    images: [item.image_url || "https://placehold.co/64x64"],
-    condition: item.item_condition,
-    quantity: item.quantity,
-    minimumLoanPeriod: item.minimum_loan_period,
-    accessories: item.accessories || [],
-    totalLoans: 0,
-    activeLoans: 0,
-    createdAt: item.created_at,
-  }));
+        if (!response.ok) {
+          throw new Error("Could not load items");
+        }
 
-  console.log("Loaded items:", this.items);
-}
+        const items = await response.json();
+        this.items = items.map(mapApiItem);
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
   },
 };
@@ -313,6 +411,7 @@ export default {
         :items="items"
         @go-to-page-one="goToPageOne"
         @update-status="handleUpdateStatus"
+        @delete-item="handleDeleteItem"
       />
 
       <LoginModal

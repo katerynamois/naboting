@@ -47,6 +47,10 @@ export default {
                 }
             }
             this.$emit('update-status', payload)
+        },
+        deleteItem(id) {
+            this.selectedItem = null
+            this.$emit('delete-item', id)
         }
     },
     watch: {
@@ -57,7 +61,7 @@ export default {
             }
         }
     },
-    emits: ['go-to-page-one', 'update-status']
+    emits: ['go-to-page-one', 'update-status', 'delete-item']
 }
 </script>
 
@@ -80,6 +84,7 @@ export default {
             :activeLoans="selectedItem.activeLoans"
             @gåTilbage="selectedItem = null"
             @update-status="updateItemStatus"
+            @delete-item="deleteItem"
         />
 
         <!-- Liste visning - skjules når en genstand er valgt -->
