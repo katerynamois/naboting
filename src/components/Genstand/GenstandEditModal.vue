@@ -44,19 +44,19 @@ export default {
         <div class="modal-sheet">
 
             <div class="modal-header">
-                <h2 class="modal-titel">Rediger genstand</h2>
-                <button class="modal-luk" type="button" @click="$emit('close')">✕</button>
+                <h2 class="modal-title">Rediger genstand</h2>
+                <button class="modal-close" type="button" @click="$emit('close')">✕</button>
             </div>
 
             <form class="modal-form" @submit.prevent="save">
 
                 <!-- Titel -->
-                <div class="felt-gruppe">
-                    <label class="felt-label" for="edit-titel">Titel *</label>
+                <div class="field-group">
+                    <label class="field-label" for="edit-titel">Titel *</label>
                     <input
                         id="edit-titel"
                         v-model="form.title"
-                        class="felt-input"
+                        class="field-input"
                         type="text"
                         placeholder="Fx Boremaskine"
                         required
@@ -64,57 +64,57 @@ export default {
                 </div>
 
                 <!-- Kategori -->
-                <div class="felt-gruppe">
-                    <label class="felt-label" for="edit-kategori">Kategori</label>
+                <div class="field-group">
+                    <label class="field-label" for="edit-kategori">Kategori</label>
                     <input
                         id="edit-kategori"
                         v-model="form.category"
-                        class="felt-input"
+                        class="field-input"
                         type="text"
                         placeholder="Fx Værktøj"
                     />
                 </div>
 
                 <!-- Mærke -->
-                <div class="felt-gruppe">
-                    <label class="felt-label" for="edit-maerke">Mærke</label>
+                <div class="field-group">
+                    <label class="field-label" for="edit-maerke">Mærke</label>
                     <input
                         id="edit-maerke"
                         v-model="form.brand"
-                        class="felt-input"
+                        class="field-input"
                         type="text"
                         placeholder="Fx Bosch"
                     />
                 </div>
 
                 <!-- Stand -->
-                <div class="felt-gruppe">
-                    <label class="felt-label" for="edit-stand">Stand</label>
-                    <select id="edit-stand" v-model="form.condition" class="felt-input felt-select">
+                <div class="field-group">
+                    <label class="field-label" for="edit-stand">Stand</label>
+                    <select id="edit-stand" v-model="form.condition" class="field-input field-select">
                         <option value="">Vælg stand</option>
                         <option v-for="opt in conditionOptions" :key="opt" :value="opt">{{ opt }}</option>
                     </select>
                 </div>
 
                 <!-- To felter side om side: Antal og Min. låneperiode -->
-                <div class="felt-raekke">
-                    <div class="felt-gruppe">
-                        <label class="felt-label" for="edit-antal">Antal</label>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label" for="edit-antal">Antal</label>
                         <input
                             id="edit-antal"
                             v-model="form.quantity"
-                            class="felt-input"
+                            class="field-input"
                             type="number"
                             min="1"
                             placeholder="1"
                         />
                     </div>
-                    <div class="felt-gruppe">
-                        <label class="felt-label" for="edit-laaneperiode">Min. lån (dage)</label>
+                    <div class="field-group">
+                        <label class="field-label" for="edit-laaneperiode">Min. lån (dage)</label>
                         <input
                             id="edit-laaneperiode"
                             v-model="form.minimumLoanPeriod"
-                            class="felt-input"
+                            class="field-input"
                             type="number"
                             min="1"
                             placeholder="Fx 3"
@@ -122,7 +122,7 @@ export default {
                     </div>
                 </div>
 
-                <button class="gem-knap" type="submit">Gem ændringer</button>
+                <button class="save-button" type="submit">Gem ændringer</button>
 
             </form>
 
@@ -157,7 +157,7 @@ export default {
     margin-bottom: var(--space-4);
 }
 
-.modal-titel {
+.modal-title {
     font-family: var(--font-display);
     font-size: var(--text-h2);
     font-weight: 600;
@@ -165,7 +165,7 @@ export default {
     margin: 0;
 }
 
-.modal-luk {
+.modal-close {
     background: transparent;
     border: none;
     font-size: 18px;
@@ -186,26 +186,26 @@ export default {
     padding-bottom: var(--space-6);
 }
 
-.felt-gruppe {
+.field-group {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
     flex: 1;
 }
 
-.felt-raekke {
+.field-row {
     display: flex;
     gap: var(--space-3);
 }
 
-.felt-label {
+.field-label {
     font-family: var(--font-body);
     font-size: var(--text-label);
     font-weight: 600;
     color: var(--color-neutral);
 }
 
-.felt-input {
+.field-input {
     font-family: var(--font-body);
     font-size: var(--text-body);
     color: var(--color-neutral);
@@ -219,11 +219,11 @@ export default {
     width: 100%;
 }
 
-.felt-input:focus {
+.field-input:focus {
     border-color: var(--color-primary);
 }
 
-.felt-select {
+.field-select {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6763' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -232,7 +232,7 @@ export default {
     cursor: pointer;
 }
 
-.gem-knap {
+.save-button {
     margin-top: var(--space-2);
     width: 100%;
     min-height: 48px;

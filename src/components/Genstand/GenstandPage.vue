@@ -98,7 +98,7 @@ export default {
         <div v-else>
 
             <!-- Sidetitel -->
-            <h1 class="page-title">Mine genstande</h1>
+            <h1 class="items-title">Mine genstande</h1>
 
             <!-- Filter tabs - activeFilter opdateres når brugeren klikker -->
             <GenstandFilter
@@ -107,7 +107,7 @@ export default {
             />
 
             <!-- Liste af filtrerede kort -->
-            <div class="card-list">
+            <div class="items-list">
                 <!-- Loop gennem filtrerede genstande og vis et kort for hver -->
                 <GenstandCard
                     v-for="item in filteredItems"
@@ -125,18 +125,18 @@ export default {
             <!-- Vises når ingen genstande matcher det valgte filter -->
             <p
                 v-if="filteredItems.length === 0"
-                class="ingen-resultater"
+                class="no-results"
                 role="status"
                 aria-live="polite"
             >
                 Ingen genstande matcher det valgte filter
             </p>
 
-            <div class="opret-knap-wrapper">
+            <div class="create-btn-wrapper">
                 <v-btn
                     color="primary"
                     rounded="lg"
-                    class="opret-knap"
+                    class="create-btn"
                     @click="$emit('go-to-page-one')"
                 >
                     Opret ny genstand
@@ -151,7 +151,7 @@ export default {
 <style scoped>
 
 /* Sidetitel */
-.page-title {
+.items-title {
     font-family: var(--font-display);
     font-size: var(--text-h1);
     font-weight: 600;
@@ -160,22 +160,21 @@ export default {
     text-align: center;
 }
 
-/* Kort stablet lodret med mellemrum imellem */
-.card-list {
+.items-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
 }
 
-/* Besked når ingen genstande matcher filteret */
-.ingen-resultater {
+.no-results {
     font-family: var(--font-body);
     font-size: var(--text-label);
     color: var(--color-secondary);
     text-align: center;
     margin-top: var(--space-8);
 }
-.opret-knap-wrapper {
+
+.create-btn-wrapper {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -185,7 +184,7 @@ export default {
   border-top: 1px solid var(--color-border);
 }
 
-.opret-knap {
+.create-btn {
   width: 100%;
   height: 48px !important;
   text-transform: none;

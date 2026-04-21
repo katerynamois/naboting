@@ -33,7 +33,7 @@ export default {
             v-for="filter in filters"
             :key="filter"
             class="filter-tab"
-            :class="{ 'filter-tab-aktiv': activeFilter === filter }"
+            :class="{ 'filter-tab-active': activeFilter === filter }"
             @click="vælgFilter(filter)"
             :aria-pressed="activeFilter === filter"
             :aria-label="`Vis ${filter === 'Alle' ? 'alle genstande' : filter}`"
@@ -92,7 +92,7 @@ export default {
 }
 
 /* Aktiv tab - fyldt grøn med samme padding som inaktive tabs */
-.filter-tab-aktiv {
+.filter-tab-active {
     background: var(--color-primary) !important;
     color: #ffffff !important;
     border-color: var(--color-primary) !important;

@@ -36,9 +36,9 @@ export default {
     computed: {
     // Returnerer den korrekte CSS-klasse baseret på status-prop
     statusClass() {
-        if (this.status === 'Tilgængelig') return 'status-tilgaengelig'
-        if (this.status === 'Udlånt') return 'status-udlaant'
-        if (this.status === 'Inaktiv') return 'status-inaktiv'
+        if (this.status === 'Tilgængelig') return 'status-available'
+        if (this.status === 'Udlånt') return 'status-loaned'
+        if (this.status === 'Inaktiv') return 'status-inactive'
     }
 },
     methods: {
@@ -154,19 +154,19 @@ export default {
 }
 
 /* Tilgængelig - grøn */
-.status-tilgaengelig {
+.status-available {
     background: var(--color-tilgaengelig-bg);
     color: var(--color-tilgaengelig-text);
 }
 
 /* Udlånt - orange */
-.status-udlaant {
+.status-loaned {
     background: var(--color-udlaant-bg);
     color: var(--color-udlaant-text);
 }
 
 /* Inaktiv - grå */
-.status-inaktiv {
+.status-inactive {
     background: var(--color-inaktiv-bg);
     color: var(--color-inaktiv-text);
 }
