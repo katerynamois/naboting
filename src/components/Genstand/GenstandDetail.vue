@@ -65,6 +65,10 @@ export default {
             type: Number,
             default: 0
         },
+        createdAt: {
+            type: String,
+            default: null
+        },
     },
     computed: {
         // Returnerer den korrekte CSS-klasse baseret på status
@@ -81,7 +85,13 @@ export default {
                 return 'Ikke angivet'
             }
             return typeof this.minimumLoanPeriod === 'number' ? `${this.minimumLoanPeriod} dage` : this.minimumLoanPeriod
+        },
+        createdAtText() {
+            if (!this.createdAt) return ''
+            const date = new Date(this.createdAt)
+            return `Oprettet ${date.toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })}`
         }
+
     },
     methods: {
         updateStatus(newStatus) {
@@ -180,7 +190,7 @@ export default {
             <div class="detalje-ejer-avatar" aria-hidden="true">DG</div>
             <div class="detalje-ejer-info">
                 <p class="detalje-ejer-navn">Din genstand</p>
-                <p class="detalje-ejer-dato">Oprettet 12. marts 2026</p>
+                <p class="detalje-ejer-dato">{{ createdAtText }}</p>
             </div>
             <div class="detalje-status-actions">
                 <button

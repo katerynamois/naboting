@@ -500,7 +500,6 @@ export default {
         :currentStep="currentStep"
         :itemData="{ ...pageOneData, ...addDetailsData }"
         @goBack="goBackFromConfirm"
-        @createItem="goToItems"
         @go-to-genstand-page="goToGenstandPage"
       />
 

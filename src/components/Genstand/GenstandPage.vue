@@ -86,6 +86,7 @@ export default {
             :accessories="selectedItem.accessories"
             :totalLoans="selectedItem.totalLoans"
             :activeLoans="selectedItem.activeLoans"
+            :createdAt="selectedItem.createdAt"
             @gåTilbage="selectedItem = null"
             @update-status="updateItemStatus"
             @delete-item="deleteItem"

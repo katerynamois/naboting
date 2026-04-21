@@ -3,7 +3,7 @@ import Stepper from "@/components/Stepper.vue";
 
 export default {
   name: "ConfirmItemScreen",
-  emits: ["goBack", "createItem", "go-to-genstand-page"],
+  emits: ["goBack", "go-to-genstand-page"],
   components: {
     Stepper,
   },
