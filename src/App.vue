@@ -37,6 +37,9 @@ export default {
       currentUserId: null,
     };
   },
+  mounted() {
+    this.loadItems();
+  },
   computed: {
     showNabotingBar() {
       return [
@@ -175,6 +178,30 @@ export default {
       this.currentPage = "genstandPage";
       this.drawer = false;
     },
+   async loadItems() {
+  const response = await fetch("http://localhost:3001/api/items");
+  const items = await response.json();
+
+  this.items = items.map((item) => ({
+    id: item.item_id,
+    userId: item.owner_id,
+    title: item.title,
+    category: item.category,
+    brand: item.brand,
+    status: item.status === "available" ? "Tilgængelig" : item.status,
+    images: [item.image_url || "https://placehold.co/64x64"],
+    condition: item.item_condition,
+    quantity: item.quantity,
+    minimumLoanPeriod: item.minimum_loan_period,
+    accessories: item.accessories || [],
+    totalLoans: 0,
+    activeLoans: 0,
+    createdAt: item.created_at,
+  }));
+
+  console.log("Loaded items:", this.items);
+}
+
   },
 };
 </script>
