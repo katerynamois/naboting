@@ -34,15 +34,13 @@ export default {
         },
     },
     computed: {
-    // Returnerer den korrekte CSS-klasse baseret på status-prop
-    statusClass() {
+        statusClass() {
         if (this.status === 'Tilgængelig') return 'status-available'
         if (this.status === 'Udlånt') return 'status-loaned'
         if (this.status === 'Inaktiv') return 'status-inactive'
     }
 },
     methods: {
-        // Når kortet klikkes, send genstands-id op til forældresiden
         handleClick() {
             this.$emit('cardClicked', this.id)
         }
@@ -56,26 +54,18 @@ export default {
 <template>
     <article class="card" @click="handleClick">
 
-    <!--- Billedsektion -->
     <img
-        :src="image" 
+        :src="image"
         :alt="`Billede af ${title}`"
         class="card-image"
     />
 
-    <!-- Tekstindholdssektion -->
     <div class="card-content">
-
-    <!-- Titel og status på samme linje -->
         <div class="card-top">
-            <!-- Genstandens titel -->
             <h2 class="card-title">{{ title }}</h2>
-
-            <!-- Statustag - viser Tilgængelig, Udlånt eller Inaktiv -->
             <span class="card-status" :class="statusClass">{{ status }}</span>
         </div>
 
-        <!-- Kategori vises altid, mærke vises kun hvis det har en værdi -->
         <p class="card-meta">
             {{ category }}
             <span v-if="brand"> · {{ brand }}</span>
@@ -88,7 +78,6 @@ export default {
 
 <style scoped>
 
-/* Hele kortet - billede og tekst side om side */
 .card {
     display: flex;
     flex-direction: row;
@@ -102,7 +91,7 @@ export default {
     cursor: pointer;
 }
 
-/* Billedets størrelse og form */
+
 .card-image {
     width: 64px;
     height: 64px;
@@ -111,12 +100,12 @@ export default {
     flex-shrink: 0;
 }
 
-/* Teksten sidder ved siden af billedet og fylder den resterende plads */
+
 .card-content {
     flex: 1;
 }
 
-/* Titel og status sidder på samme linje */
+
 .card-top {
     display: flex;
     justify-content: space-between;
@@ -124,7 +113,7 @@ export default {
     margin-bottom: 4px;
 }
 
-/* Genstandens titel */
+
 .card-title {
     font-family: var(--font-body);
     font-size: var(--text-body);
@@ -133,7 +122,7 @@ export default {
     margin: 0;
 }
 
-/* Kategori og mærke tekst under titlen */
+
 .card-meta {
     font-family: var(--font-body);
     font-size: var(--text-label);
@@ -141,7 +130,7 @@ export default {
     margin: 0;
 }
 
-/* Statustag - pilleform */
+
 .card-status {
     font-family: var(--font-body);
     font-size: 13px;
@@ -153,19 +142,19 @@ export default {
     align-items: center;
 }
 
-/* Tilgængelig - grøn */
+
 .status-available {
     background: var(--color-tilgaengelig-bg);
     color: var(--color-tilgaengelig-text);
 }
 
-/* Udlånt - orange */
+
 .status-loaned {
     background: var(--color-udlaant-bg);
     color: var(--color-udlaant-text);
 }
 
-/* Inaktiv - grå */
+
 .status-inactive {
     background: var(--color-inaktiv-bg);
     color: var(--color-inaktiv-text);

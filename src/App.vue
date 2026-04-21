@@ -28,6 +28,7 @@ function toApiStatus(status) {
   return status;
 }
 
+// Maps a raw API response object to the shape used internally by the UI
 function mapApiItem(item) {
   return {
     id: item.item_id,
@@ -47,6 +48,7 @@ function mapApiItem(item) {
   };
 }
 
+// Resolves an image URL to a usable src — handles uploads, external URLs and base64
 function toImageSource(imageUrl) {
   if (!imageUrl) {
     return PLACEHOLDER_IMAGE_URL;
@@ -68,6 +70,7 @@ function toImageSource(imageUrl) {
   return PLACEHOLDER_IMAGE_URL;
 }
 
+// Converts the UI item shape to the payload expected by the REST API
 function toApiItem(item) {
   return {
     owner_id: item.userId,
@@ -258,6 +261,7 @@ export default {
       const existingOwner = this.items.find((item) => item.userId)?.userId;
       return existingOwner || this.currentUserId || 1;
     },
+    // Optimistically updates status locally, then syncs to API and rolls back on failure
     async handleUpdateStatus({ id, status }) {
       const index = this.items.findIndex(i => i.id === id);
       if (index !== -1) {
@@ -405,7 +409,7 @@ export default {
 <template>
   <v-app>
 
-    <!-- Topbar — vises kun på sider uden egen toolbar -->
+    <!-- Top bar — hidden on pages that have their own toolbar -->
     <v-app-bar
       v-if="showNabotingBar"
       flat
@@ -418,7 +422,7 @@ export default {
       </v-btn>
     </v-app-bar>
 
-    <!-- Burger menu drawer -->
+    <!-- Navigation drawer (burger menu) -->
     <v-navigation-drawer v-model="drawer" location="right" temporary width="280">
       <v-list class="pa-0">
         <template v-if="profileCreated">
@@ -454,7 +458,7 @@ export default {
     </v-navigation-drawer>
 
     <v-main>
-      <!-- Page navigation -->
+      <!-- Page routing — currentPage controls which component is rendered -->
       <Home
         v-if="currentPage === 'home'"
         @go-to-profile="goToRegisterProfile"

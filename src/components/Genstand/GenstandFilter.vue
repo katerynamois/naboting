@@ -2,7 +2,6 @@
 export default {
     name: 'GenstandFilter',
     props: {
-        // Det aktive filter - sendes ind fra forælderen
         activeFilter: {
             type: String,
             required: true
@@ -11,12 +10,10 @@ export default {
     emits: ['filterChanged'],
     data() {
         return {
-            // De fire mulige filtre - Alle viser alle genstande
-            filters: ['Alle', 'Tilgængelig', 'Udlånt', 'Inaktiv']
+                filters: ['Alle', 'Tilgængelig', 'Udlånt', 'Inaktiv']
         }
     },
     methods: {
-        // Kaldes når en tab klikkes - sender det valgte filter op til forælderen
         vælgFilter(filter) {
             this.$emit('filterChanged', filter)
         }
@@ -25,10 +22,7 @@ export default {
 </script>
 
 <template>
-    <!-- Filter navigation - viser fire tabs øverst på listen -->
-    <nav class="filter-bar" aria-label="Filtrer genstande efter status">
-
-        <!-- Loop gennem filtre og vis en tab for hver -->
+    <nav class="filter-bar" aria-label="Filter items by status">
         <button
             v-for="filter in filters"
             :key="filter"
@@ -46,7 +40,7 @@ export default {
 
 <style scoped>
 
-/* Filter bar - fylder hele bredden og fordeler tabs jævnt */
+
 .filter-bar {
     display: flex;
     flex-direction: row;
@@ -57,7 +51,7 @@ export default {
     padding: 2px 0;
 }
 
-/* Basis tab - alle tabs har samme størrelse og vægt altid */
+
 .filter-tab {
     font-family: var(--font-body);
     font-size: var(--text-label);
@@ -74,24 +68,24 @@ export default {
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-/* Hover - subtilt grønt */
+
 .filter-tab:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
 }
 
-/* Fjerner fokus ring ved museklik - aktiv styling giver nok feedback */
+/* Suppress focus ring on mouse click — active styling provides enough feedback */
 .filter-tab:focus:not(:focus-visible) {
     outline: none;
 }
 
-/* Fokus ring kun ved keyboard navigation */
+/* Show focus ring only for keyboard navigation */
 .filter-tab:focus-visible {
     outline: 3px solid var(--color-neutral);
     outline-offset: 3px;
 }
 
-/* Aktiv tab - fyldt grøn med samme padding som inaktive tabs */
+
 .filter-tab-active {
     background: var(--color-primary) !important;
     color: #ffffff !important;

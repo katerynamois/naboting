@@ -75,7 +75,7 @@ export default {
                     />
                 </div>
 
-                <!-- Mærke -->
+                <!-- Brand -->
                 <div class="field-group">
                     <label class="field-label" for="edit-maerke">Mærke</label>
                     <input
@@ -96,7 +96,7 @@ export default {
                     </select>
                 </div>
 
-                <!-- To felter side om side: Antal og Min. låneperiode -->
+                <!-- Quantity and min. loan period side by side -->
                 <div class="field-row">
                     <div class="field-group">
                         <label class="field-label" for="edit-antal">Antal</label>

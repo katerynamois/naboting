@@ -12,9 +12,7 @@ export default {
     },
     data() {
         return {
-            // Holder styr på hvilken genstand der er valgt
             selectedItem: null,
-            // Holder styr på det aktive filter - Alle betyder alle vises som standard
             activeFilter: 'Alle',
         }
     },
@@ -25,8 +23,6 @@ export default {
         },
     },
     computed: {
-        // Filtrerer genstande baseret på aktivt filter
-        // Hvis Alle er valgt vises alle genstande
         filteredItems() {
             if (this.activeFilter === 'Alle') return this.items
             return this.items.filter(item =>
@@ -35,7 +31,6 @@ export default {
         }
     },
     methods: {
-        // Kaldes når et kort klikkes - finder den valgte genstand ud fra id
         visDetaljer(id) {
             this.selectedItem = this.items.find(item => item.id === id)
         },
@@ -57,7 +52,7 @@ export default {
         },
     },
     watch: {
-        // Reset selected item when items prop changes (e.g. after an edit)
+        // Keep selectedItem in sync after parent reloads items (e.g. after edit or delete)
         items() {
             if (this.selectedItem) {
                 this.selectedItem = this.items.find(i => i.id === this.selectedItem.id) || null
@@ -71,7 +66,7 @@ export default {
 <template>
     <main class="page">
 
-        <!-- Vis detaljesiden når en genstand er valgt -->
+        <!-- Detail view — shown when an item is selected -->
         <GenstandDetail
             v-if="selectedItem"
             :id="selectedItem.id"
@@ -94,21 +89,17 @@ export default {
             @edit-item="editItem"
         />
 
-        <!-- Liste visning - skjules når en genstand er valgt -->
+        <!-- List view — shown when no item is selected -->
         <div v-else>
 
-            <!-- Sidetitel -->
             <h1 class="items-title">Mine genstande</h1>
 
-            <!-- Filter tabs - activeFilter opdateres når brugeren klikker -->
             <GenstandFilter
                 :activeFilter="activeFilter"
                 @filterChanged="activeFilter = $event"
             />
 
-            <!-- Liste af filtrerede kort -->
             <div class="items-list">
-                <!-- Loop gennem filtrerede genstande og vis et kort for hver -->
                 <GenstandCard
                     v-for="item in filteredItems"
                     :key="item.id"
@@ -122,7 +113,7 @@ export default {
                 />
             </div>
 
-            <!-- Vises når ingen genstande matcher det valgte filter -->
+            <!-- Shown when no items match the active filter -->
             <p
                 v-if="filteredItems.length === 0"
                 class="no-results"
@@ -150,7 +141,6 @@ export default {
 
 <style scoped>
 
-/* Sidetitel */
 .items-title {
     font-family: var(--font-display);
     font-size: var(--text-h1);
