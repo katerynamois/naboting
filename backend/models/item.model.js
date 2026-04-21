@@ -128,11 +128,6 @@ async function update(id, item) {
   return findById(id);
 }
 
-async function updateStatus(id, status) {
-  await pool.execute("UPDATE items SET status = ? WHERE item_id = ?", [status, id]);
-  return findById(id);
-}
-
 async function remove(id) {
   const connection = await pool.getConnection();
 
@@ -157,7 +152,5 @@ export default {
   findById,
   create,
   update,
-  updateStatus,
   remove,
 };
-

@@ -31,7 +31,6 @@ npm run api
 | GET | `/api/items/:id` | Hent en genstand |
 | POST | `/api/items` | Opret genstand |
 | PUT | `/api/items/:id` | Opdater genstand |
-| PATCH | `/api/items/:id/status` | Opdater status |
 | DELETE | `/api/items/:id` | Slet genstand |
 | GET | `/api/item-images/item/:itemId` | Hent billeder for genstand |
 | POST | `/api/item-images` | Tilfoj billede |

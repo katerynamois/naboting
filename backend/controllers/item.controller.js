@@ -51,24 +51,6 @@ export async function updateItem(req, res, next) {
   }
 }
 
-export async function updateItemStatus(req, res, next) {
-  try {
-    if (!req.body.status) {
-      return res.status(400).json({ message: "Status is required" });
-    }
-
-    const item = await Item.updateStatus(req.params.id, req.body.status);
-
-    if (!item) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    res.json(item);
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function deleteItem(req, res, next) {
   try {
     const deleted = await Item.remove(req.params.id);
