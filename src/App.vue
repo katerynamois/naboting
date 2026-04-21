@@ -36,7 +36,7 @@ function mapApiItem(item) {
     category: item.category,
     brand: item.brand,
     status: toUiStatus(item.status),
-    images: [item.image_url || "https://placehold.co/64x64"],
+    images: [toImageSource(item.image_url)],
     condition: item.item_condition,
     quantity: item.quantity,
     minimumLoanPeriod: item.minimum_loan_period,
@@ -45,6 +45,27 @@ function mapApiItem(item) {
     activeLoans: 0,
     createdAt: item.created_at,
   };
+}
+
+function toImageSource(imageUrl) {
+  if (!imageUrl) {
+    return PLACEHOLDER_IMAGE_URL;
+  }
+
+  if (
+    imageUrl.startsWith("http://") ||
+    imageUrl.startsWith("https://") ||
+    imageUrl.startsWith("data:") ||
+    imageUrl.startsWith("blob:")
+  ) {
+    return imageUrl;
+  }
+
+  if (imageUrl.startsWith("/uploads/")) {
+    return `${API_BASE_URL.replace("/api", "")}${imageUrl}`;
+  }
+
+  return PLACEHOLDER_IMAGE_URL;
 }
 
 function toApiItem(item) {
@@ -57,19 +78,9 @@ function toApiItem(item) {
     quantity: item.quantity || 1,
     minimum_loan_period: item.minimumLoanPeriod || null,
     status: toApiStatus(item.status),
-    images: toApiImages(item.images),
+    images: item.images && item.images.length ? item.images : [PLACEHOLDER_IMAGE_URL],
     accessories: item.accessories || [],
   };
-}
-
-function toApiImages(images = []) {
-  if (!images.length) {
-    return [PLACEHOLDER_IMAGE_URL];
-  }
-
-  return images.map((image) => (
-    image && !image.startsWith("data:") ? image : PLACEHOLDER_IMAGE_URL
-  ));
 }
 
 export default {
@@ -99,6 +110,7 @@ export default {
       profileWelcomeRequest: 0,
       profileData: null,
       currentUserId: null,
+      isCreatingItem: false,
     };
   },
   mounted() {
@@ -256,7 +268,12 @@ export default {
       this.profileData = profileData;
     },
     async goToGenstandPage() {
+      if (this.isCreatingItem) {
+        return;
+      }
+
       if (this.pageOneData && this.addDetailsData) {
+        this.isCreatingItem = true;
         const d1 = this.pageOneData;
         const d2 = this.addDetailsData;
         const newItem = {
@@ -293,6 +310,8 @@ export default {
           console.error(error);
           window.alert("Genstanden kunne ikke oprettes. Tjek at API og database kører, og prøv igen.");
           return;
+        } finally {
+          this.isCreatingItem = false;
         }
       }
       this.currentPage = "genstandPage";
@@ -416,7 +435,6 @@ export default {
         :itemData="{ ...pageOneData, ...addDetailsData }"
         @goBack="goBackFromConfirm"
         @createItem="goToItems"
-        @goToGenstandPage="goToGenstandPage"
         @go-to-genstand-page="goToGenstandPage"
       />
 
