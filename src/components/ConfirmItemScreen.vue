@@ -3,7 +3,7 @@ import Stepper from "@/components/Stepper.vue";
 
 export default {
   name: "ConfirmItemScreen",
-  emits: ["goBack", "createItem", "goToGenstandPage"],
+  emits: ["goBack", "createItem", "goToGenstandPage", "go-to-genstand-page"],
   components: {
     Stepper,
   },
@@ -131,7 +131,7 @@ export default {
           color="primary"
           rounded="lg"
           class="create-button"
-          @click="$emit('goToGenstandPage')"
+          @click="$emit('go-to-genstand-page')"
         >
           Opret genstand
         </v-btn>

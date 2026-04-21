@@ -127,7 +127,7 @@ export default {
 </script>
 
 <template>
-  <v-container class="pa-4 pb-24" max-width="600">
+  <v-container class="page-one-container pa-4" max-width="600">
     <v-toolbar flat color="white" class="top-toolbar">
       <!-- <v-btn icon variant="text" @click="$emit('goBack')">
           <v-icon>mdi-chevron-left</v-icon>
@@ -283,6 +283,11 @@ export default {
 </template>
 
 <style scoped>
+.page-one-container {
+  min-height: 100vh;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important;
+}
+
 .category-toggle .v-btn--active {
   background-color: var(--color-primary) !important;
   color: white !important;

@@ -9,6 +9,7 @@ import LoginModal from "@/components/LoginModal.vue";
 import RegisterProfile from "@/components/RegisterProfile.vue";
 
 const API_BASE_URL = "http://localhost:3001/api";
+const PLACEHOLDER_IMAGE_URL = "https://placehold.co/64x64";
 
 const STATUS_LABELS = {
   available: "Tilg\u00e6ngelig",
@@ -56,9 +57,19 @@ function toApiItem(item) {
     quantity: item.quantity || 1,
     minimum_loan_period: item.minimumLoanPeriod || null,
     status: toApiStatus(item.status),
-    images: item.images || [],
+    images: toApiImages(item.images),
     accessories: item.accessories || [],
   };
+}
+
+function toApiImages(images = []) {
+  if (!images.length) {
+    return [PLACEHOLDER_IMAGE_URL];
+  }
+
+  return images.map((image) => (
+    image && !image.startsWith("data:") ? image : PLACEHOLDER_IMAGE_URL
+  ));
 }
 
 export default {
@@ -271,7 +282,8 @@ export default {
           });
 
           if (!response.ok) {
-            throw new Error("Could not create item");
+            const errorText = await response.text();
+            throw new Error(errorText || "Could not create item");
           }
 
           this.pageOneData = null;
@@ -279,6 +291,7 @@ export default {
           await this.loadItems();
         } catch (error) {
           console.error(error);
+          window.alert("Genstanden kunne ikke oprettes. Tjek at API og database kører, og prøv igen.");
           return;
         }
       }
@@ -404,6 +417,7 @@ export default {
         @goBack="goBackFromConfirm"
         @createItem="goToItems"
         @goToGenstandPage="goToGenstandPage"
+        @go-to-genstand-page="goToGenstandPage"
       />
 
       <GenstandPage
