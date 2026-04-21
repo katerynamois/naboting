@@ -51,7 +51,10 @@ export default {
         deleteItem(id) {
             this.selectedItem = null
             this.$emit('delete-item', id)
-        }
+        },
+        editItem(payload) {
+            this.$emit('edit-item', payload)
+        },
     },
     watch: {
         // Reset selected item when items prop changes (e.g. after an edit)
@@ -61,7 +64,7 @@ export default {
             }
         }
     },
-    emits: ['go-to-page-one', 'update-status', 'delete-item']
+    emits: ['go-to-page-one', 'update-status', 'delete-item', 'edit-item']
 }
 </script>
 
@@ -79,12 +82,14 @@ export default {
             :image="selectedItem.images[0]"
             :condition="selectedItem.condition"
             :minimumLoanPeriod="selectedItem.minimumLoanPeriod"
+            :quantity="selectedItem.quantity"
             :accessories="selectedItem.accessories"
             :totalLoans="selectedItem.totalLoans"
             :activeLoans="selectedItem.activeLoans"
             @gåTilbage="selectedItem = null"
             @update-status="updateItemStatus"
             @delete-item="deleteItem"
+            @edit-item="editItem"
         />
 
         <!-- Liste visning - skjules når en genstand er valgt -->

@@ -284,6 +284,35 @@ export default {
         }
       }
     },
+    async handleEditItem({ id, title, category, brand, condition, minimumLoanPeriod, quantity }) {
+      const index = this.items.findIndex(i => i.id === id)
+      if (index === -1) return
+
+      const updated = {
+        ...this.items[index],
+        title,
+        category,
+        brand,
+        condition,
+        minimumLoanPeriod,
+        quantity,
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(toApiItem(updated)),
+        })
+
+        if (!response.ok) throw new Error("Could not update item")
+
+        await this.loadItems()
+      } catch (error) {
+        console.error(error)
+        window.alert("Genstanden kunne ikke opdateres. Prøv igen.")
+      }
+    },
     async handleDeleteItem(id) {
       try {
         const response = await fetch(`${API_BASE_URL}/items/${id}`, {
@@ -481,6 +510,7 @@ export default {
         @go-to-page-one="goToPageOne"
         @update-status="handleUpdateStatus"
         @delete-item="handleDeleteItem"
+        @edit-item="handleEditItem"
       />
 
       <LoginModal

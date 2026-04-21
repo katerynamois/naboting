@@ -1,10 +1,14 @@
 <script>
+import GenstandEditModal from './GenstandEditModal.vue'
+
 export default {
     name: 'GenstandDetail',
     components: {
+        GenstandEditModal,
     },
     data() {
         return {
+            showEditModal: false,
         }
     },
     props: {
@@ -42,6 +46,10 @@ export default {
         minimumLoanPeriod: {
             type: [Number, String],
             default: null
+        },
+        quantity: {
+            type: [Number, String],
+            default: 1
         },
         // Tilbehør til genstanden - kun vist hvis der er noget
         accessories: {
@@ -86,11 +94,15 @@ export default {
             if (window.confirm('Vil du slette denne genstand?')) {
                 this.$emit('delete-item', this.id)
             }
-        }
+        },
+        handleSaveEdit(updatedFields) {
+            this.$emit('edit-item', { id: this.id, ...updatedFields })
+            this.showEditModal = false
+        },
     },
     watch: {
     },
-    emits: ['gåTilbage', 'update-status', 'delete-item']
+    emits: ['gåTilbage', 'update-status', 'delete-item', 'edit-item']
 }
 </script>
 
@@ -186,6 +198,13 @@ export default {
                 </button>
             </div>
             <button
+                class="rediger-knap"
+                type="button"
+                @click="showEditModal = true"
+            >
+                Rediger genstand
+            </button>
+            <button
                 class="delete-item-button"
                 type="button"
                 @click="deleteItem"
@@ -193,6 +212,18 @@ export default {
                 Slet genstand
             </button>
         </section>
+
+        <GenstandEditModal
+            v-if="showEditModal"
+            :title="title"
+            :category="category"
+            :brand="brand"
+            :condition="condition"
+            :minimumLoanPeriod="minimumLoanPeriod"
+            :quantity="quantity"
+            @save="handleSaveEdit"
+            @close="showEditModal = false"
+        />
 
         <!-- Statistik sektion - kun synlig for ejeren -->
         <section class="detalje-stats" aria-label="Statistik for din genstand">
@@ -518,6 +549,19 @@ export default {
 .status-option--inaktiv.status-option--active {
     background: var(--color-inaktiv-bg);
     color: var(--color-inaktiv-text);
+}
+
+.rediger-knap {
+    flex: 0 0 100%;
+    min-height: 42px;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: #ffffff;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    font-weight: 700;
 }
 
 .delete-item-button {
