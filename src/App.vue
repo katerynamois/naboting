@@ -114,6 +114,7 @@ export default {
     };
   },
   mounted() {
+    this.restoreSession();
     this.loadItems();
   },
   computed: {
@@ -129,12 +130,43 @@ export default {
     },
   },
   methods: {
+    saveSession() {
+      localStorage.setItem("nabotingSession", JSON.stringify({
+        currentPage: this.currentPage,
+        currentUserId: this.currentUserId,
+        profileCreated: this.profileCreated,
+        profileData: this.profileData,
+      }));
+    },
+    restoreSession() {
+      const savedSession = localStorage.getItem("nabotingSession");
+
+      if (!savedSession) {
+        return;
+      }
+
+      try {
+        const session = JSON.parse(savedSession);
+        this.profileCreated = Boolean(session.profileCreated);
+        this.currentUserId = session.currentUserId || null;
+        this.profileData = session.profileData || null;
+
+        if (this.profileCreated) {
+          this.currentPage = session.currentPage || "profile";
+        }
+      } catch (error) {
+        localStorage.removeItem("nabotingSession");
+        console.error(error);
+      }
+    },
     goHome() {
       this.currentPage = this.profileCreated ? "profile" : "home";
+      this.saveSession();
     },
     goToItems() {
       this.currentPage = "genstandPage";
       this.drawer = false;
+      this.saveSession();
     },
     goToProfile(profileData = null) {
       this.profileCreated = true;
@@ -150,6 +182,7 @@ export default {
       this.currentPage = "profile";
       this.showLogin = false;
       this.drawer = false;
+      this.saveSession();
     },
     goToProfileEdit() {
       this.profileCreated = true;
@@ -157,6 +190,7 @@ export default {
       this.profileEditRequest += 1;
       this.showLogin = false;
       this.drawer = false;
+      this.saveSession();
     },
     goToRegisterProfile() {
       this.currentPage = "registerProfile";
@@ -186,6 +220,7 @@ export default {
       this.currentPage = "home";
       this.showLogin = false;
       this.drawer = false;
+      localStorage.removeItem("nabotingSession");
     },
     goBackFromConfirm() {
       this.currentPage = "addDetails";
@@ -205,6 +240,7 @@ export default {
     goBackFromPageOne() {
       this.currentPage = this.createFlowReturnPage || (this.profileCreated ? "profile" : "home");
       this.drawer = false;
+      this.saveSession();
     },
     goToAddDetails(data) {
       this.pageOneData = data;
@@ -316,6 +352,7 @@ export default {
       }
       this.currentPage = "genstandPage";
       this.drawer = false;
+      this.saveSession();
     },
    async loadItems() {
       try {
